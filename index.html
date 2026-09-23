@@ -1,0 +1,2204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nhà Mình - Chợ Online Quán Địa Phương | 0% Hoa Hồng Đơn Hàng</title>
+  <meta name="description" content="Nền tảng kết nối quán ăn, tạp hóa và tiệm làm tại nhà với khách hàng xung quanh. Giá gốc tận quán, không thu hoa hồng trên từng đơn, giao gom theo khung giờ thông minh.">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       CSS Variables & Design Tokens
+       ========================================================================== */
+    :root {
+      --primary: #FF5A36;
+      --primary-hover: #E0401B;
+      --primary-soft: rgba(255, 90, 54, 0.12);
+      --primary-glow: rgba(255, 90, 54, 0.35);
+
+      --emerald: #10B981;
+      --emerald-hover: #059669;
+      --emerald-soft: rgba(16, 185, 129, 0.12);
+
+      --amber: #F59E0B;
+      --amber-soft: rgba(245, 158, 11, 0.12);
+
+      --bg-dark: #0B0F19;
+      --bg-card: rgba(22, 28, 45, 0.75);
+      --bg-card-hover: rgba(30, 41, 67, 0.85);
+      --bg-card-border: rgba(255, 255, 255, 0.08);
+      --bg-card-border-active: rgba(255, 90, 54, 0.4);
+
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --text-dim: #64748B;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 30px;
+      --radius-full: 9999px;
+
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.35);
+      --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 0 35px var(--primary-glow);
+
+      --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-smooth: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Reset & Base */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(255, 90, 54, 0.07) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+        radial-gradient(circle at 50% 80%, rgba(255, 90, 54, 0.05) 0%, transparent 50%);
+      background-attachment: fixed;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background: none;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: var(--radius-full);
+      font-size: 0.825rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      background: var(--primary-soft);
+      color: var(--primary);
+      border: 1px solid rgba(255, 90, 54, 0.25);
+    }
+
+    .badge.emerald {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .badge.amber {
+      background: var(--amber-soft);
+      color: var(--amber);
+      border-color: rgba(245, 158, 11, 0.3);
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px 24px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #E0401B 100%);
+      color: #fff;
+      box-shadow: 0 4px 18px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 90, 54, 0.5);
+    }
+
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+      border: 1px solid var(--bg-card-border);
+      backdrop-filter: blur(10px);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-2px);
+    }
+
+    .btn-emerald {
+      background: linear-gradient(135deg, var(--emerald) 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-emerald:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.45);
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(11, 15, 25, 0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--bg-card-border);
+      transition: all var(--transition-normal);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      letter-spacing: -0.5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .brand-logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--primary) 0%, #FF8A65 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      box-shadow: 0 4px 15px var(--primary-glow);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 1.2vw, 16px);
+      list-style: none;
+      flex-shrink: 1;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links li {
+      white-space: nowrap;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      transition: color var(--transition-fast);
+      white-space: nowrap;
+      padding: 6px 4px;
+      display: inline-block;
+    }
+
+    .nav-links a:hover {
+      color: var(--text-main);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .nav-actions .btn {
+      white-space: nowrap;
+    }
+
+    .navbar .btn-primary {
+      padding: 8px 16px;
+      font-size: 0.825rem;
+    }
+
+    .pitch-mode-btn {
+      background: linear-gradient(135deg, rgba(255, 90, 54, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 7px 13px;
+      border-radius: var(--radius-full);
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .pitch-mode-btn:hover {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      transform: scale(1.03);
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 80px 0 60px;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 50px;
+      align-items: center;
+    }
+
+    .hero-content h1 {
+      font-size: 3.25rem;
+      line-height: 1.18;
+      font-weight: 800;
+      letter-spacing: -1.2px;
+      margin: 20px 0;
+    }
+
+    .highlight-gradient {
+      background: linear-gradient(135deg, #FF784B 0%, #FF3813 50%, #FFB088 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .emerald-gradient {
+      background: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      line-height: 1.7;
+    }
+
+    .hero-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid var(--bg-card-border);
+    }
+
+    .stat-item h3 {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .stat-item p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Phone Simulator (Interactive Component) */
+    .simulator-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .phone-device {
+      width: 340px;
+      height: 690px;
+      background: #111624;
+      border-radius: 46px;
+      border: 9px solid #232B3E;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(255, 90, 54, 0.15);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .phone-notch {
+      width: 140px;
+      height: 24px;
+      background: #232B3E;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .notch-camera {
+      width: 8px;
+      height: 8px;
+      background: #0B0F19;
+      border-radius: 50%;
+    }
+
+    .phone-screen {
+      flex: 1;
+      overflow-y: auto;
+      padding: 38px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: #0D121F;
+    }
+
+    .phone-screen::-webkit-scrollbar {
+      width: 4px;
+    }
+    .phone-screen::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+
+    /* Simulator Switcher */
+    .sim-mode-toggle {
+      display: flex;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 4px;
+      border-radius: var(--radius-full);
+      margin-bottom: 14px;
+      border: 1px solid var(--bg-card-border);
+    }
+
+    .sim-tab-btn {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-radius: var(--radius-full);
+      transition: all var(--transition-fast);
+      text-align: center;
+    }
+
+    .sim-tab-btn.active {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 10px var(--primary-glow);
+    }
+
+    .sim-tab-btn.active.merchant {
+      background: var(--emerald);
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Phone Views */
+    .phone-view {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .phone-view.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .phone-header-card {
+      background: linear-gradient(135deg, rgba(255, 90, 54, 0.15) 0%, rgba(22, 28, 45, 0.8) 100%);
+      border: 1px solid rgba(255, 90, 54, 0.2);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+
+    .phone-header-card.merchant-accent {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(22, 28, 45, 0.8) 100%);
+      border-color: rgba(16, 185, 129, 0.25);
+    }
+
+    .mini-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background: var(--primary-soft);
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+
+    .mini-badge.green {
+      background: var(--emerald-soft);
+      color: var(--emerald);
+    }
+
+    .store-item-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-bottom: 10px;
+      transition: all var(--transition-fast);
+    }
+
+    .store-item-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .item-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .item-sub {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .price-compare {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      font-size: 0.75rem;
+    }
+
+    .price-original {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--emerald);
+    }
+
+    .price-old-app {
+      text-decoration: line-through;
+      color: var(--text-dim);
+      font-size: 0.75rem;
+    }
+
+    .save-tag {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .add-to-cart-mini {
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      margin-top: 6px;
+      float: right;
+    }
+
+    /* Batch Schedule Selector in App */
+    .delivery-options-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-md);
+      padding: 10px;
+      margin: 10px 0;
+    }
+
+    .del-opt-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 8px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      font-size: 0.75rem;
+      text-align: left;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+    }
+
+    .del-opt-btn.active {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+      color: #fff;
+    }
+
+    /* Merchant Simulator View */
+    .merchant-batch-order {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+
+    .merchant-batch-order h4 {
+      font-size: 0.85rem;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .route-chip {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.68rem;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .crm-mini-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--bg-card-border);
+      font-size: 0.75rem;
+    }
+
+    /* Section Styles */
+    .section {
+      padding: 90px 0;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 55px;
+    }
+
+    .section-header h2 {
+      font-size: 2.35rem;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      margin: 14px 0;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    /* Cards Grid */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 22px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      backdrop-filter: blur(16px);
+      transition: all var(--transition-normal);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      border-color: var(--bg-card-border-active);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    .card-icon.red { background: var(--primary-soft); color: var(--primary); }
+    .card-icon.green { background: var(--emerald-soft); color: var(--emerald); }
+    .card-icon.amber { background: var(--amber-soft); color: var(--amber); }
+    .card-icon.blue { background: rgba(59, 130, 246, 0.15); color: #3B82F6; }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* SCQA Stepper */
+    .scqa-flow {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+
+    .scqa-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-lg);
+      padding: 26px;
+      position: relative;
+    }
+
+    .scqa-letter {
+      position: absolute;
+      top: 18px;
+      right: 22px;
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.04);
+      line-height: 1;
+    }
+
+    .scqa-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    /* Interactive Unit Economics Calculator */
+    .calc-card {
+      background: linear-gradient(145deg, rgba(22, 28, 45, 0.9) 0%, rgba(15, 20, 32, 0.95) 100%);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .calc-slider-group {
+      margin-bottom: 34px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .slider-header label {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .slider-value-display {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+    }
+
+    input[type=range] {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: #232B3E;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 0 15px var(--primary);
+      border: 3px solid #fff;
+    }
+
+    .calc-comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .calc-col {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .calc-col.winner {
+      background: rgba(16, 185, 129, 0.04);
+      border-color: rgba(16, 185, 129, 0.35);
+      position: relative;
+    }
+
+    .winner-badge {
+      position: absolute;
+      top: -12px;
+      right: 20px;
+      background: var(--emerald);
+      color: #000;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      text-transform: uppercase;
+    }
+
+    .calc-col h4 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .calc-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.95rem;
+    }
+
+    .calc-row.final {
+      border-bottom: none;
+      padding-top: 18px;
+      font-size: 1.15rem;
+      font-weight: 800;
+    }
+
+    .val-loss { color: #EF4444; font-weight: 700; }
+    .val-gain { color: var(--emerald); font-weight: 700; font-size: 1.4rem; }
+
+    /* 3 Logistics Layers Visualizer */
+    .layers-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .layer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-lg);
+      padding: 30px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .layer-card.active-stage {
+      border-color: var(--primary);
+      box-shadow: 0 0 25px rgba(255, 90, 54, 0.15);
+    }
+
+    .stage-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .layer-icon-huge {
+      font-size: 2.4rem;
+      margin-bottom: 16px;
+    }
+
+    /* Flywheel / Anti-Leakage Section */
+    .flywheel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .flywheel-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .step-box {
+      display: flex;
+      gap: 16px;
+      background: var(--bg-card);
+      border: 1px solid var(--bg-card-border);
+      padding: 18px 22px;
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+    }
+
+    .step-box:hover {
+      border-color: var(--emerald);
+      transform: translateX(6px);
+    }
+
+    .step-num {
+      width: 34px;
+      height: 34px;
+      background: var(--emerald-soft);
+      color: var(--emerald);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    /* Roadmap Timeline */
+    .timeline {
+      position: relative;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 2px;
+      background: var(--bg-card-border);
+      transform: translateX(-50%);
+    }
+
+    .timeline-item {
+      position: relative;
+      margin-bottom: 40px;
+      width: 50%;
+      padding: 0 35px;
+    }
+
+    .timeline-item.left {
+      left: 0;
+      text-align: right;
+    }
+
+    .timeline-item.right {
+      left: 50%;
+      text-align: left;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      top: 15px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+    }
+
+    .timeline-item.left .timeline-dot { right: -8px; }
+    .timeline-item.right .timeline-dot { left: -8px; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(10px);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #151B2B;
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-xl);
+      padding: 36px;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .close-modal-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--bg-card-border);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* ==========================================================================
+       FULLSCREEN PITCH DECK MODE (Keynote / Pitch Deck Experience)
+       ========================================================================== */
+    #pitchDeckContainer {
+      position: fixed;
+      inset: 0;
+      background: #07090E;
+      z-index: 999;
+      display: none;
+      flex-direction: column;
+    }
+
+    #pitchDeckContainer.active {
+      display: flex;
+    }
+
+    .deck-top-bar {
+      height: 60px;
+      padding: 0 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(11, 15, 25, 0.7);
+    }
+
+    .deck-slide-viewport {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    .deck-slide {
+      position: absolute;
+      inset: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.96) translateY(20px);
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .deck-slide.current {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1) translateY(0);
+    }
+
+    .deck-footer-bar {
+      height: 70px;
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(11, 15, 25, 0.7);
+    }
+
+    .slide-indicators {
+      display: flex;
+      gap: 8px;
+    }
+
+    .slide-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .slide-dot.active {
+      background: var(--primary);
+      width: 28px;
+      border-radius: 5px;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--bg-card-border);
+      padding: 60px 0 40px;
+      background: #080B12;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 1180px) {
+      .nav-links {
+        gap: 8px;
+      }
+      .nav-links a {
+        font-size: 0.76rem;
+        padding: 4px 2px;
+      }
+      .brand {
+        font-size: 1.1rem;
+      }
+      .navbar .btn-primary {
+        padding: 6px 12px;
+        font-size: 0.78rem;
+      }
+      .pitch-mode-btn {
+        padding: 6px 10px;
+        font-size: 0.76rem;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .hero-grid { grid-template-columns: 1fr; text-align: center; }
+      .hero-content h1 { font-size: 2.5rem; }
+      .hero-stats-row { grid-template-columns: repeat(3, 1fr); }
+      .grid-4, .scqa-flow { grid-template-columns: repeat(2, 1fr); }
+      .calc-comparison-grid { grid-template-columns: 1fr; }
+      .flywheel-grid { grid-template-columns: 1fr; }
+      .layers-container { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .timeline::before { left: 20px; }
+      .timeline-item { width: 100%; left: 0 !important; text-align: left !important; padding-left: 50px; }
+      .timeline-item .timeline-dot { left: 12px !important; }
+    }
+
+    @media (max-width: 600px) {
+      .hero-content h1 { font-size: 2rem; }
+      .grid-4, .scqa-flow, .grid-3 { grid-template-columns: 1fr; }
+      .hero-stats-row { grid-template-columns: 1fr; gap: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================================================
+       MAIN NAVIGATION
+       ========================================================================== -->
+  <nav class="navbar" id="mainNav">
+    <div class="container nav-inner">
+      <a href="#" class="brand">
+        <div class="brand-logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <span>Nhà Mình</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#problem">Nghịch lý 30%</a></li>
+        <li><a href="#heroSim">App Giả lập</a></li>
+        <li><a href="#calculator">So sánh Doanh thu</a></li>
+        <li><a href="#logistics">3 Lớp Giao hàng</a></li>
+        <li><a href="#anti-leakage">Chống rò rỉ</a></li>
+        <li><a href="#roadmap">Lộ trình 30 ngày</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="pitch-mode-btn" id="openPitchBtn" title="Xem dạng Slide thuyết trình Pitch Deck">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="12" x="3" y="4" rx="2"/>
+            <line x1="2" x2="22" y1="20" y2="20"/>
+          </svg>
+          <span>Pitch Mode 🎬</span>
+        </button>
+        <button class="btn btn-primary" onclick="openJoinModal()">Tham gia 20 Quán Đầu</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ==========================================================================
+       HERO SECTION
+       ========================================================================== -->
+  <header class="hero">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="badge">
+          <span>✨</span> Chợ Online Của Quán Địa Phương
+        </div>
+        
+        <h1>
+          Ăn đúng <span class="emerald-gradient">Giá Gốc</span>.<br>
+          Bán giữ trọn <span class="highlight-gradient">100% Lợi Nhuận</span>.
+        </h1>
+
+        <p class="hero-desc">
+          Nền tảng xóm giềng kết nối quán ăn, tiệm tạp hóa và hàng quán tại gia trong bán kính 1km. 
+          <strong>Không ăn hoa hồng trên từng đơn</strong>, giải quyết bài toán giao hàng bằng gom đơn theo khung giờ thông minh.
+        </p>
+
+        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+          <a href="#simulator" class="btn btn-primary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><line x1="12" x2="12.01" y1="18" y2="18"/></svg>
+            Trải nghiệm App Giả Lập
+          </a>
+          <a href="#calculator" class="btn btn-outline">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10"/></svg>
+            Tính Tiền Tiết Kiệm
+          </a>
+        </div>
+
+        <div class="hero-stats-row">
+          <div class="stat-item">
+            <h3 class="emerald-gradient">0%</h3>
+            <p>Hoa hồng trên từng đơn</p>
+          </div>
+          <div class="stat-item">
+            <h3 class="highlight-gradient">-25% to -30%</h3>
+            <p>Giá rẻ hơn app lớn cho khách</p>
+          </div>
+          <div class="stat-item">
+            <h3>1 Chuyến</h3>
+            <p>Gom 5–10 đơn cùng khung giờ</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Interactive Phone Preview -->
+      <div class="simulator-wrapper" id="heroSim">
+        <div class="phone-device">
+          <div class="phone-notch"><div class="notch-camera"></div></div>
+          
+          <div class="phone-screen">
+            <!-- Mode Switcher in Phone -->
+            <div class="sim-mode-toggle">
+              <button class="sim-tab-btn active" id="tabCustomer" onclick="switchPhoneTab('customer')">Khách Hàng</button>
+              <button class="sim-tab-btn" id="tabMerchant" onclick="switchPhoneTab('merchant')">Chủ Quán</button>
+            </div>
+
+            <!-- VIEW: CUSTOMER -->
+            <div class="phone-view active" id="viewCustomer">
+              <div class="phone-header-card">
+                <span class="mini-badge">📍 Khu phố 3, P. Tân Định</span>
+                <h4 style="font-size: 0.95rem; margin-top: 4px; color: #fff;">Quán quen quanh bạn (≤ 1.2km)</h4>
+                <p style="font-size: 0.72rem; color: var(--text-muted);">Tất cả đều cam kết bán đúng Giá Gốc</p>
+              </div>
+
+              <!-- Delivery Mode Selection in App -->
+              <div class="delivery-options-box">
+                <div style="font-size: 0.72rem; font-weight: 700; color: #fff; margin-bottom: 6px;">Chọn cách nhận hàng:</div>
+                <button class="del-opt-btn active" id="btnBatchOpt" onclick="selectDeliveryOpt('batch')">
+                  <span>🍱 <strong>Gom đơn trưa (11:30)</strong><br><small style="color:var(--emerald)">Chung xóm ship 5k</small></span>
+                  <span>✓</span>
+                </button>
+                <button class="del-opt-btn" id="btnPickupOpt" onclick="selectDeliveryOpt('pickup')">
+                  <span>🚶 <strong>Tự ghé lấy (Pickup)</strong><br><small>Xong sau 10 phút - 0đ</small></span>
+                  <span></span>
+                </button>
+              </div>
+
+              <!-- Store Item 1 -->
+              <div class="store-item-card">
+                <div class="item-top">
+                  <div>
+                    <div class="item-title">Cơm Tấm Chị Hai</div>
+                    <div class="item-sub">Đầu hẻm 48 • Cách 450m</div>
+                  </div>
+                  <span class="save-tag">Rẻ hơn 17k</span>
+                </div>
+                <div class="item-sub">Món: Cơm sườn bì chả đặc biệt</div>
+                <div class="price-compare">
+                  <span class="price-original">45.000đ</span>
+                  <span class="price-old-app">62.000đ</span>
+                </div>
+                <button class="add-to-cart-mini" onclick="addToSimCart('Cơm sườn', 45000)">+ Đặt món</button>
+              </div>
+
+              <!-- Store Item 2 -->
+              <div class="store-item-card">
+                <div class="item-top">
+                  <div>
+                    <div class="item-title">Tạp Hóa & Trái Cây Cô Ba</div>
+                    <div class="item-sub">Cạnh cổng trường • Cách 200m</div>
+                  </div>
+                  <span class="save-tag">Giá Chợ</span>
+                </div>
+                <div class="item-sub">Cam sành miền Tây (Kg)</div>
+                <div class="price-compare">
+                  <span class="price-original">25.000đ</span>
+                  <span class="price-old-app">35.000đ</span>
+                </div>
+                <button class="add-to-cart-mini" onclick="addToSimCart('Cam sành 1kg', 25000)">+ Đặt món</button>
+              </div>
+
+              <!-- Sim Cart Toast -->
+              <div id="simCartBar" style="background: var(--primary); padding: 8px 12px; border-radius: 8px; font-size: 0.75rem; color:#fff; display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                <span id="cartCountText">1 món • 45.000đ</span>
+                <span style="font-weight:700">Xem đơn →</span>
+              </div>
+            </div>
+
+            <!-- VIEW: MERCHANT -->
+            <div class="phone-view" id="viewMerchant">
+              <div class="phone-header-card merchant-accent">
+                <span class="mini-badge green">🏪 Quán Cơm Chị Hai</span>
+                <h4 style="font-size: 0.95rem; margin-top: 4px; color: #fff;">Bảng Điều Khiển Quán</h4>
+                <p style="font-size: 0.72rem; color: var(--text-muted);">Tháng này giữ trọn: <strong>+4.200.000đ</strong> tiền hoa hồng</p>
+              </div>
+
+              <!-- Batch Delivery Notification -->
+              <div class="merchant-batch-order">
+                <h4>
+                  <span>📦 Chuyến Gom Trưa 11:30</span>
+                  <span class="mini-badge green">Đã gom 6 đơn</span>
+                </h4>
+                <span class="route-chip">Lộ trình: Hẻm 48 ➔ Cư xá A ➔ Chung cư mini (1.1km)</span>
+                <div style="font-size:0.75rem; color:#fff; margin-bottom: 6px;">Tổng đơn chuyến này: <strong>270.000đ</strong></div>
+                <button style="width:100%; background:var(--emerald); color:#fff; font-size:0.72rem; font-weight:700; padding:6px; border-radius:6px;" onclick="alert('Đã in bill 6 đơn theo thứ tự lộ trình tối ưu!')">In bill & Bắt đầu giao</button>
+              </div>
+
+              <!-- Retain Customers CRM -->
+              <div style="background: rgba(255,255,255,0.03); border:1px solid var(--bg-card-border); border-radius:12px; padding:10px;">
+                <div style="font-size:0.78rem; font-weight:700; color:#fff; margin-bottom:6px;">Chăm sóc khách quen (38 khách)</div>
+                
+                <div class="crm-mini-item">
+                  <div>
+                    <div style="color:#fff; font-weight:600">Anh Tuấn (Phòng 402)</div>
+                    <div style="color:var(--text-muted); font-size:0.68rem">Đã đặt 8 lần tháng này</div>
+                  </div>
+                  <span class="mini-badge green">Thẻ bạc</span>
+                </div>
+
+                <div class="crm-mini-item">
+                  <div>
+                    <div style="color:#fff; font-weight:600">Chị Mai (Hẻm 48/6)</div>
+                    <div style="color:var(--text-muted); font-size:0.68rem">4 ngày chưa đặt lại</div>
+                  </div>
+                  <button style="background:var(--primary-soft); color:var(--primary); font-size:0.65rem; font-weight:700; padding:3px 6px; border-radius:4px;" onclick="alert('Đã gửi thông báo nhắc kèm lời chúc trưa nay!')">Nhắc đơn</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================================================
+       SCQA STORYTELLING SECTION
+       ========================================================================== -->
+  <section class="section" id="problem">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge amber">Phương pháp SCQA</div>
+        <h2>Gốc Rễ Vấn Đề & Lối Thoát Cho Quán Nhỏ</h2>
+        <p>Tại sao 80% quán nhỏ muốn bán online nhưng đành ngậm ngùi rút lui hoặc chịu cảnh bán giùm cho các app giao hàng?</p>
+      </div>
+
+      <div class="scqa-flow">
+        <!-- Situation -->
+        <div class="scqa-card">
+          <div class="scqa-letter">S</div>
+          <div class="badge" style="margin-bottom: 12px;">Situation</div>
+          <div class="scqa-title">Hiện Trạng</div>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">
+            Quán ăn, tạp hóa nhỏ có khách quen xung quanh và có thể tự giao được trong bán kính gần (hẻm, khu phố, cư xá).
+          </p>
+        </div>
+
+        <!-- Complication -->
+        <div class="scqa-card" style="border-color: rgba(239, 68, 68, 0.35);">
+          <div class="scqa-letter" style="color: rgba(239, 68, 68, 0.08);">C</div>
+          <div class="badge" style="background: rgba(239, 68, 68, 0.15); color: #EF4444; border-color: rgba(239, 68, 68, 0.3); margin-bottom: 12px;">Complication</div>
+          <div class="scqa-title">Nghịch Lý Đắng Cay</div>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">
+            App lớn thu <strong>25–30% chiết khấu</strong> buộc quán tăng giá. Khách mua đắt hơn, quán mất khách. Bán Zalo thì lộn xộn, sót đơn. Quán không có shipper bị gạt ra rìa.
+          </p>
+        </div>
+
+        <!-- Question -->
+        <div class="scqa-card" style="border-color: rgba(245, 158, 11, 0.35);">
+          <div class="scqa-letter" style="color: rgba(245, 158, 11, 0.08);">Q</div>
+          <div class="badge amber" style="margin-bottom: 12px;">Question</div>
+          <div class="scqa-title">Câu Hỏi Then Chốt</div>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">
+            Làm sao giúp quán nhỏ bán giá gốc với chi phí thấp nhất, mà nền tảng vẫn thu tiền bền vững <strong>kể cả khi khách và quán nhắn Zalo với nhau</strong>?
+          </p>
+        </div>
+
+        <!-- Answer -->
+        <div class="scqa-card" style="border-color: rgba(16, 185, 129, 0.4); background: rgba(16, 185, 129, 0.03);">
+          <div class="scqa-letter" style="color: rgba(16, 185, 129, 0.08);">A</div>
+          <div class="badge emerald" style="margin-bottom: 12px;">Answer</div>
+          <div class="scqa-title">Lời Giải Nhà Mình</div>
+          <p style="font-size: 0.9rem; color: var(--text-muted);">
+            <strong>0% hoa hồng trên từng đơn</strong>. Thu tiền qua gói công cụ & quảng bá khu vực. Gom đơn theo khung giờ để quán tự giao 1 vòng quanh xóm!
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       UNIT ECONOMICS CALCULATOR
+       ========================================================================== -->
+  <section class="section" id="calculator">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge emerald">BÀI TOÁN KINH TẾ THỰC TẾ</div>
+        <h2>So Sánh: Bạn Đang Mất Bao Nhiêu Tiền Cho App Lớn?</h2>
+        <p>Kéo thanh trượt để xem sự khác biệt sống còn giữa chiết khấu phần trăm và mô hình Nhà Mình</p>
+      </div>
+
+      <div class="calc-card">
+        <div class="calc-slider-group">
+          <div class="slider-header">
+            <label for="revRange">Doanh thu bán online dự kiến của quán mỗi tháng:</label>
+            <div class="slider-value-display" id="revValLabel">30.000.000 đ</div>
+          </div>
+          <input type="range" id="revRange" min="10000000" max="100000000" step="5000000" value="30000000" oninput="calculateEconomics()">
+          <div style="display:flex; justify-content:space-between; font-size:0.78rem; color:var(--text-muted); margin-top:8px;">
+            <span>10 triệu/tháng</span>
+            <span>50 triệu/tháng</span>
+            <span>100 triệu/tháng</span>
+          </div>
+        </div>
+
+        <div class="calc-comparison-grid">
+          <!-- Traditional App -->
+          <div class="calc-col">
+            <h4>
+              <span style="color:#EF4444">⚠️</span>
+              Bán Qua App Giao Hàng Lớn
+            </h4>
+            <div class="calc-row">
+              <span>Mức chiết khấu hoa hồng:</span>
+              <strong style="color:#EF4444">28%</strong>
+            </div>
+            <div class="calc-row">
+              <span>Số tiền bị cắt phế mất đi:</span>
+              <span class="val-loss" id="appLossVal">-8.400.000 đ</span>
+            </div>
+            <div class="calc-row">
+              <span>Hệ lụy giá cả:</span>
+              <span style="color:var(--text-muted)">Phải tăng giá món 25–30%</span>
+            </div>
+            <div class="calc-row">
+              <span>Sở hữu khách quen:</span>
+              <span style="color:var(--text-muted)">Không (App giữ số & data)</span>
+            </div>
+            <div class="calc-row final">
+              <span>Lợi nhuận giữ lại:</span>
+              <span style="color:#fff;" id="appKeepVal">21.600.000 đ</span>
+            </div>
+          </div>
+
+          <!-- Nha Minh Platform -->
+          <div class="calc-col winner">
+            <div class="winner-badge">Tiết Kiệm Vượt Trội</div>
+            <h4>
+              <span style="color:var(--emerald)">✨</span>
+              Bán Qua Nền Tảng Nhà Mình
+            </h4>
+            <div class="calc-row">
+              <span>Hoa hồng trên đơn hàng:</span>
+              <strong style="color:var(--emerald)">0%</strong>
+            </div>
+            <div class="calc-row">
+              <span>Phí nền tảng cố định:</span>
+              <span style="color:var(--text-main)">199.000 đ / tháng (Gói Chuẩn)</span>
+            </div>
+            <div class="calc-row">
+              <span>Giá bán đến tay khách:</span>
+              <span style="color:var(--emerald); font-weight:600">Đúng Giá Gốc Tận Quán</span>
+            </div>
+            <div class="calc-row">
+              <span>Sở hữu tệp khách quen:</span>
+              <span style="color:var(--emerald); font-weight:600">100% Thuộc Về Quán</span>
+            </div>
+            <div class="calc-row final">
+              <span>Bảo vệ thêm cho quán:</span>
+              <span class="val-gain" id="savingsVal">+8.201.000 đ</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 25px; text-align: center; font-size: 0.9rem; color: var(--text-muted);">
+          💡 <em>"Một năm quán có thể giữ lại từ <strong>60.000.000đ – 100.000.000đ</strong> thay vì chuyển cho các nền tảng công nghệ trung gian."</em>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       3 LOGISTICS LAYERS
+       ========================================================================== -->
+  <section class="section" id="logistics">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">KIẾN TRÚC VẬN HÀNH THÔNG MINH</div>
+        <h2>3 Lớp Giao Hàng Giải Quyết Bài Toán Shipper</h2>
+        <p>Học từ thất bại phá sản của Dunzo (Ấn Độ): Không bao giờ ôm đồm đội ngũ logistics khổng lồ khi lợi nhuận từng đơn chưa vững chắc.</p>
+      </div>
+
+      <div class="layers-container">
+        <!-- Layer A -->
+        <div class="layer-card active-stage">
+          <div class="stage-tag">Giai đoạn MVP (Hiện tại)</div>
+          <div class="layer-icon-huge">🚶‍♂️</div>
+          <h3>Lớp A: Quán Tự Giao & Tự Đến Lấy (Pickup)</h3>
+          <p>
+            Dành cho quán đã có sẵn người nhà giao hoặc khách ở gần trong bán kính 500m. Khách đặt trước, quán chuẩn bị sẵn, khách ghé lấy không cần xếp hàng. 
+          </p>
+          <div style="margin-top:auto; padding-top:20px; font-weight:700; color:var(--emerald); font-size:0.85rem;">
+            ✓ Chi phí logistics cho nền tảng: 0 VNĐ
+          </div>
+        </div>
+
+        <!-- Layer B -->
+        <div class="layer-card active-stage" style="border-color: rgba(16, 185, 129, 0.4);">
+          <div class="stage-tag" style="color:var(--emerald)">Đột phá cốt lõi (Giai đoạn 2)</div>
+          <div class="layer-icon-huge">🍱</div>
+          <h3>Lớp B: Gom Đơn Theo Khung Giờ Cố Định</h3>
+          <p>
+            Quán chưa có shipper chọn 1–3 khung giờ (11:30 trưa & 17:30 chiều). Hệ thống gom 5–10 đơn trong cùng một xóm/tổ dân phố, gợi ý lộ trình ngắn nhất. Quán chỉ cần chạy 1 vòng 15 phút là xong!
+          </p>
+          <div style="margin-top:auto; padding-top:20px; font-weight:700; color:var(--emerald); font-size:0.85rem;">
+            ✓ 1 chuyến xe giao 8 đơn • Phù hợp cơm trưa, tạp hóa, trái cây
+          </div>
+        </div>
+
+        <!-- Layer C -->
+        <div class="layer-card">
+          <div class="stage-tag" style="color:var(--text-dim)">Giai đoạn 3 (Chỉ mở khi Lớp B ổn định)</div>
+          <div class="layer-icon-huge">🛵</div>
+          <h3>Lớp C: Shipper Tự Do Khu Vực</h3>
+          <p>
+            Nhóm 2–3 shipper tự do phục vụ riêng một phường, được trả phí theo đơn hoặc theo khung giờ. Khách trả phí ship theo bậc cố định minh bạch (10k - 15k). Không gánh nặng lương cứng.
+          </p>
+          <div style="margin-top:auto; padding-top:20px; font-weight:700; color:var(--text-dim); font-size:0.85rem;">
+            ✓ Thử nghiệm hẹp từng khu • Tránh bẫy phình to chi phí
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ANTI-LEAKAGE STRATEGY & FLYWHEEL
+       ========================================================================== -->
+  <section class="section" id="anti-leakage">
+    <div class="container">
+      <div class="flywheel-grid">
+        <div>
+          <div class="badge emerald">CHIẾN LƯỢC BẢN QUYỀN</div>
+          <h2 style="font-size: 2.3rem; font-weight: 800; margin: 16px 0;">
+            Khách Và Quán "Nhắn Zalo Riêng" Thì Sao?
+          </h2>
+          <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 24px; line-height: 1.7;">
+            Các app truyền thống sợ nhất là <strong>Platform Leakage (Rò rỉ nền tảng)</strong> vì họ ăn hoa hồng theo đơn. Quán và khách nhắn riêng thì app mất tiền.
+          </p>
+          <div style="background: rgba(255, 90, 54, 0.08); border-left: 4px solid var(--primary); padding: 18px; border-radius: 0 12px 12px 0; margin-bottom: 24px;">
+            <p style="color: #fff; font-weight: 600; font-size: 0.95rem;">
+              "Nhà Mình không cược doanh thu vào hoa hồng đơn. Khách có nhắn Zalo trực tiếp, nền tảng vẫn không mất tiền. Chúng tôi thu tiền từ những thứ Zalo không thể làm được!"
+            </p>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Chúng tôi giữ chân người dùng bằng <strong>lợi ích thực tế</strong> hằng ngày chứ không bằng sự trói buộc cưỡng ép.
+          </p>
+        </div>
+
+        <div class="flywheel-steps">
+          <div class="step-box">
+            <div class="step-num">1</div>
+            <div>
+              <h4 style="color:#fff; font-size: 1.05rem; margin-bottom: 4px;">Công Cụ Gom Đơn & Lộ Trình</h4>
+              <p style="color:var(--text-muted); font-size:0.88rem;">Nhắn tin Zalo lộn xộn, quên đơn. Dùng Nhà Mình tự động gom đơn theo khung giờ và vẽ tuyến đường giao 1 lượt.</p>
+            </div>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">2</div>
+            <div>
+              <h4 style="color:#fff; font-size: 1.05rem; margin-bottom: 4px;">Thẻ Tích Điểm & Đặt Lại 1 Chạm</h4>
+              <p style="color:var(--text-muted); font-size:0.88rem;">Khách đặt qua app được tích điểm đổi quà tại quán, lưu lịch sử đặt lại chỉ với 1 chạm nhanh hơn gõ tin nhắn.</p>
+            </div>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">3</div>
+            <div>
+              <h4 style="color:#fff; font-size: 1.05rem; margin-bottom: 4px;">Thống Kê Khách Hàng Thông Minh</h4>
+              <p style="color:var(--text-muted); font-size:0.88rem;">Quán biết chính xác ai là khách ruột, ai 5 ngày chưa ghé để tự động gửi thông báo tri ân kéo khách quay lại.</p>
+            </div>
+          </div>
+
+          <div class="step-box">
+            <div class="step-num">4</div>
+            <div>
+              <h4 style="color:#fff; font-size: 1.05rem; margin-bottom: 4px;">Quảng Bá Phủ Sóng Cụm Dân Cư</h4>
+              <p style="color:var(--text-muted); font-size:0.88rem;">Phí quảng bá siêu rẻ hiển thị quán lên đầu danh sách khu vực phường, mang lại khách mới liên tục.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       ROADMAP & 30-DAY GO-TO-MARKET PLAN
+       ========================================================================== -->
+  <section class="section" id="roadmap">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge amber">KẾ HOẠCH HÀNH ĐỘNG THỰC CHIẾN</div>
+        <h2>Lộ Trình Triển Khai & Chiến Lược Traffic Tự Nhiên</h2>
+        <p>Không đốt tiền quảng cáo vô ích. Đi sâu vào từng cụm dân cư bằng nội dung chân thực và tiếp xúc trực tiếp.</p>
+      </div>
+
+      <div class="timeline">
+        <!-- Item 1 -->
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="card" style="padding:22px;">
+            <div class="badge" style="margin-bottom:8px;">Tuần 1: Định Danh & Gặp 20 Quán</div>
+            <h4 style="color:#fff; margin-bottom:6px;">Khảo Sát Thực Địa 20 Quán Đầu</h4>
+            <p style="font-size:0.88rem; color:var(--text-muted);">
+              Phỏng vấn 3 câu hỏi sống còn: Mất bao nhiêu cho app? Gom 5 đơn có chịu giao không? Có sẵn sàng trả gói phần mềm nhỏ không?
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 2 -->
+        <div class="timeline-item right">
+          <div class="timeline-dot"></div>
+          <div class="card" style="padding:22px;">
+            <div class="badge emerald" style="margin-bottom:8px;">Tuần 2: 4 Trụ Cột Nội Dung</div>
+            <h4 style="color:#fff; margin-bottom:6px;">Build In Public Trên TikTok & Reels</h4>
+            <p style="font-size:0.88rem; color:var(--text-muted);">
+              Series video: <em>"Tô phở này quán bán bao nhiêu, lên app giá bao nhiêu?"</em> và <em>"Nhật ký làm app giúp quán nhỏ thoát cảnh bị cắt phế"</em>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 3 -->
+        <div class="timeline-item left">
+          <div class="timeline-dot"></div>
+          <div class="card" style="padding:22px;">
+            <div class="badge amber" style="margin-bottom:8px;">Tuần 3: Chạy Thử Gom Đơn</div>
+            <h4 style="color:#fff; margin-bottom:6px;">Trải Nghiệm Chạy Chuyến Gom Cùng Quán</h4>
+            <p style="font-size:0.88rem; color:var(--text-muted);">
+              Chạy thực tế chuyến gom 11:30 trưa tại 1 phường mục tiêu. Đo đạc thời gian, sự hài lòng của khách và quán khi nhận cơm nóng hổi với phí ship chỉ 5k.
+            </p>
+          </div>
+        </div>
+
+        <!-- Item 4 -->
+        <div class="timeline-item right">
+          <div class="timeline-dot"></div>
+          <div class="card" style="padding:22px;">
+            <div class="badge" style="margin-bottom:8px;">Tuần 4: Đóng Gói Mô Hình & Nhân Rộng</div>
+            <h4 style="color:#fff; margin-bottom:6px;">Chứng Minh Unit Economics & Thu Phí Thử Nghiệm</h4>
+            <p style="font-size:0.88rem; color:var(--text-muted);">
+              Thu phí gói thuê bao thử nghiệm (50k - 99k/tháng), đo tỷ lệ đặt lại của khách. Khi 1 khu có lãi thì nhân bản sang phường tiếp theo!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       MARKET PRECEDENTS (CHOWNOW, MAGICPIN VS DUNZO)
+       ========================================================================== -->
+  <section class="section" style="background: rgba(255, 255, 255, 0.015); border-top: 1px solid var(--bg-card-border); border-bottom: 1px solid var(--bg-card-border);">
+    <div class="container">
+      <div class="section-header">
+        <div class="badge">TIỀN LỆ THẾ GIỚI & BÀI HỌC ĐẮT GIÁ</div>
+        <h2>Học Từ Những Người Đi Trước</h2>
+        <p>Không sáng tạo bánh xe từ đầu, tiếp thu mô hình thành công và tránh xa vết xe đổ</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-icon green">🇺🇸</div>
+          <h3>ChowNow (Mỹ)</h3>
+          <p>
+            Mô hình thu phí thuê bao cố định thay vì cắt phế trên đơn hàng. Giúp nhà hàng độc lập giữ chân khách trung thành và duy trì biên lợi nhuận bền vững.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-icon blue">🇮🇳</div>
+          <h3>ONDC & magicpin (Ấn Độ)</h3>
+          <p>
+            Tách rời các khâu: app đặt món, app giao hàng và nền tảng quán để giảm thiểu hoa hồng độc quyền. magicpin đạt 150.000 đơn/ngày nhờ mạng lưới địa phương.
+          </p>
+        </div>
+
+        <div class="card" style="border-color: rgba(239, 68, 68, 0.3);">
+          <div class="card-icon red">⚠️</div>
+          <h3 style="color:#EF4444">Bài Học Dunzo (Đóng Cửa 1/2025)</h3>
+          <p>
+            Cảnh báo sinh tử: Mở rộng logistics quá sớm khi lợi nhuận mỗi đơn chưa vững chắc. Nhà Mình tuyệt đối không tự nuôi đội shipper khổng lồ!
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       CALL TO ACTION
+       ========================================================================== -->
+  <section class="section" style="text-align: center;">
+    <div class="container">
+      <div style="max-width: 760px; margin: 0 auto; background: linear-gradient(135deg, rgba(255, 90, 54, 0.12) 0%, rgba(16, 185, 129, 0.08) 100%); border: 1px solid rgba(255, 90, 54, 0.3); border-radius: var(--radius-xl); padding: 50px 30px;">
+        <h2 style="font-size: 2.4rem; font-weight: 800; margin-bottom: 16px;">
+          Tham Gia Thử Nghiệm 20 Quán Tiên Phong
+        </h2>
+        <p style="color: var(--text-muted); font-size: 1.1rem; margin-bottom: 32px;">
+          Được thiết lập menu hoàn toàn miễn phí, hỗ trợ lên kế hoạch gom đơn theo khung giờ và miễn phí 3 tháng sử dụng trọn bộ công cụ quản lý khách quen.
+        </p>
+        <button class="btn btn-primary" style="padding: 16px 36px; font-size: 1.05rem;" onclick="openJoinModal()">
+          Đăng Ký Tham Gia Ngay (0đ Phí)
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       FOOTER
+       ========================================================================== -->
+  <footer>
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="brand-logo-icon" style="width: 32px; height: 32px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <strong style="color: #fff; font-size: 1.1rem;">Nhà Mình Platform</strong>
+      </div>
+      <div>
+        Chợ online quán địa phương • Ăn giá gốc, giữ trọn lời
+      </div>
+      <div style="font-size: 0.85rem;">
+        © 2026 Dự án Khởi nghiệp Nhà Mình.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================================================
+       MODAL: ĐĂNG KÝ 20 QUÁN ĐẦU TIÊN
+       ========================================================================== -->
+  <div class="modal-overlay" id="joinModal" onclick="closeJoinModal(event)">
+    <div class="modal-card" onclick="event.stopPropagation()">
+      <button class="close-modal-btn" onclick="closeJoinModal()">&times;</button>
+      <div class="badge" style="margin-bottom: 12px;">Dành Cho Chủ Quán</div>
+      <h3 style="font-size: 1.45rem; font-weight: 800; color: #fff; margin-bottom: 8px;">Đăng Ký Thử Nghiệm Nhà Mình</h3>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 22px;">Chúng tôi sẽ đến tận quán hỗ trợ chụp menu, thiết lập khung giờ gom đơn và dùng thử miễn phí.</p>
+      
+      <form onsubmit="handleFormSubmit(event)">
+        <div class="form-group">
+          <label>Tên quán ăn / Tiệm của bạn:</label>
+          <input type="text" class="form-input" required placeholder="Ví dụ: Cơm Tấm Chị Hai">
+        </div>
+        <div class="form-group">
+          <label>Số điện thoại / Zalo liên hệ:</label>
+          <input type="tel" class="form-input" required placeholder="09xx xxx xxx">
+        </div>
+        <div class="form-group">
+          <label>Khu vực (Phường / Quận):</label>
+          <input type="text" class="form-input" required placeholder="Ví dụ: Phường Tân Định, Quận 1">
+        </div>
+        <div class="form-group">
+          <label>Mặt hàng kinh doanh chính:</label>
+          <select class="form-input" style="background:#1C2438;">
+            <option>Quán cơm, bún phở, đồ ăn nóng</option>
+            <option>Tạp hóa, bánh kẹo, đồ dùng gia đình</option>
+            <option>Trái cây, rau củ quả tươi</option>
+            <option>Đồ ăn vặt, trà sữa, chè làm tại nhà</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 14px; margin-top: 10px;">Gửi Đăng Ký Thử Nghiệm</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       FULLSCREEN PITCH DECK MODE (FOR PRESENTATIONS & PITCHING)
+       ========================================================================== -->
+  <div id="pitchDeckContainer">
+    <!-- Top Bar -->
+    <div class="deck-top-bar">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <span class="badge" style="background:var(--primary); color:#fff; border:none;">PITCH DECK</span>
+        <strong style="color:#fff; font-size:1rem;">Nhà Mình — The Neighborhood Food Cloud</strong>
+      </div>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Dùng phím <kbd style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">←</kbd> <kbd style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px;">→</kbd> để chuyển slide</span>
+        <button class="btn btn-outline" style="padding: 6px 14px; font-size: 0.85rem;" onclick="toggleDeckFullscreen()">Phóng to / Thu nhỏ</button>
+        <button class="btn btn-primary" style="padding: 6px 14px; font-size: 0.85rem;" onclick="closePitchDeck()">Đóng Deck (Esc)</button>
+      </div>
+    </div>
+
+    <!-- Viewport with Slides -->
+    <div class="deck-slide-viewport">
+      
+      <!-- Slide 1: Cover -->
+      <div class="deck-slide current" data-slide="1">
+        <div class="badge" style="margin-bottom: 20px; align-self: flex-start;">PITCH PRESENTATION • 2026</div>
+        <h1 style="font-size: 4rem; line-height: 1.15; font-weight: 800; margin-bottom: 24px;">
+          Chợ Số <span class="highlight-gradient">Xóm Giềng</span>.<br>
+          <span class="emerald-gradient">0% Hoa Hồng</span> Trên Từng Đơn.
+        </h1>
+        <p style="font-size: 1.4rem; color: var(--text-muted); max-width: 820px; line-height: 1.6; margin-bottom: 30px;">
+          Nền tảng địa phương giúp quán ăn, tiệm tạp hóa và hàng quán tại nhà tiếp cận khách xung quanh với <strong>giá gốc</strong>, bảo vệ túi tiền của chủ quán bằng gom đơn theo khung giờ.
+        </p>
+        <div style="display: flex; gap: 20px;">
+          <div class="badge emerald" style="font-size: 1rem; padding: 10px 18px;">💡 Không thu hoa hồng đơn hàng</div>
+          <div class="badge amber" style="font-size: 1rem; padding: 10px 18px;">🍱 Gom đơn 1 lượt không cần shipper</div>
+        </div>
+      </div>
+
+      <!-- Slide 2: Problem -->
+      <div class="deck-slide" data-slide="2">
+        <div class="badge" style="background:rgba(239,68,68,0.2); color:#EF4444; border-color:rgba(239,68,68,0.3); margin-bottom:16px; align-self:flex-start;">VẤN ĐỀ THỊ TRƯỜNG</div>
+        <h2 style="font-size: 3rem; font-weight: 800; margin-bottom: 30px;">Cái Bẫy 25–30% Chiết Khấu Của App Lớn</h2>
+        
+        <div class="grid-3" style="width: 100%;">
+          <div class="card" style="border-color: rgba(239,68,68,0.3);">
+            <h3 style="color:#EF4444;">1. Nỗi đau Quán nhỏ</h3>
+            <p style="font-size:1.05rem;">Mất 25–30% lợi nhuận trên mỗi đơn. Buộc phải tăng giá bán, đánh mất khách quen lâu năm.</p>
+          </div>
+          <div class="card" style="border-color: rgba(239,68,68,0.3);">
+            <h3 style="color:#EF4444;">2. Thiệt thòi của Khách</h3>
+            <p style="font-size:1.05rem;">Tô bún ở quán 40k, lên app thành 55k + 20k tiền ship. Đắt đỏ vô lý dù quán ở ngay đầu hẻm.</p>
+          </div>
+          <div class="card" style="border-color: rgba(239,68,68,0.3);">
+            <h3 style="color:#EF4444;">3. Rào cản Shipper</h3>
+            <p style="font-size:1.05rem;">Quán không có shipper riêng đành đứng ngoài cuộc chơi online, phụ thuộc hoàn toàn vào app ngoại.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3: Solution -->
+      <div class="deck-slide" data-slide="3">
+        <div class="badge emerald" style="margin-bottom:16px; align-self:flex-start;">GIẢI PHÁP ĐỘT PHÁ</div>
+        <h2 style="font-size: 3rem; font-weight: 800; margin-bottom: 30px;">Nhà Mình: Chợ Online Của Quán Địa Phương</h2>
+        
+        <div class="grid-3" style="width: 100%;">
+          <div class="card" style="border-color: rgba(16, 185, 129, 0.4);">
+            <h3 class="emerald-gradient">Giá Gốc Tận Quán</h3>
+            <p style="font-size:1.05rem;">Khách được mua đúng giá quán bán tại chỗ. Không bị đội giá, tiết kiệm 20k–30k trên mỗi bữa ăn.</p>
+          </div>
+          <div class="card" style="border-color: rgba(16, 185, 129, 0.4);">
+            <h3 class="emerald-gradient">0% Hoa Hồng</h3>
+            <p style="font-size:1.05rem;">Quán giữ trọn 100% doanh thu đơn hàng. Nền tảng sống bằng phí thuê bao công cụ & quảng bá khu vực.</p>
+          </div>
+          <div class="card" style="border-color: rgba(16, 185, 129, 0.4);">
+            <h3 class="emerald-gradient">Gom Đơn Theo Khung Giờ</h3>
+            <p style="font-size:1.05rem;">Gom 5–10 đơn cùng xóm lúc 11:30 trưa. Quán chạy 1 vòng 15 phút là giao xong, không cần thuê shipper!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 4: Business Model & Anti-Leakage -->
+      <div class="deck-slide" data-slide="4">
+        <div class="badge amber" style="margin-bottom:16px; align-self:flex-start;">MÔ HÌNH DOANH THU & CHỐNG RÒ RỈ</div>
+        <h2 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 25px;">Không Sợ Khách & Quán Nhắn Zalo Bỏ App</h2>
+        
+        <div class="grid-2" style="width: 100%;">
+          <div class="card">
+            <h3>4 Nguồn Doanh Thu Ổn Định</h3>
+            <ul style="color:var(--text-muted); font-size:1rem; list-style-position:inside; line-height:2;">
+              <li><strong>Phí thuê bao tháng (SaaS):</strong> Gói 99k - 199k/tháng cho bộ công cụ quản lý.</li>
+              <li><strong>Phí đẩy tin & quảng bá:</strong> Hiển thị quán lên đầu danh sách phường.</li>
+              <li><strong>Công cụ CRM nâng cao:</strong> Tích điểm tự động, gửi voucher cho khách quen.</li>
+              <li><strong>Phí xử lý giao hàng Lớp C:</strong> Phí dịch vụ shipper khu vực theo bậc.</li>
+            </ul>
+          </div>
+          <div class="card" style="background: rgba(16, 185, 129, 0.04); border-color: rgba(16, 185, 129, 0.3);">
+            <h3 class="emerald-gradient">Tại sao mô hình không sợ rò rỉ?</h3>
+            <p style="font-size:1.05rem; line-height:1.7;">
+              Vì nền tảng <strong>không thu tiền theo phần trăm đơn</strong>! Dù khách có lưu số nhắn Zalo, nền tảng vẫn không mất đồng nào. Quán vẫn cần nền tảng để: Gom đơn tự động, tìm khách mới trong khu phố và phát hành thẻ tích điểm giữ chân khách.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 5: Logistics Strategy -->
+      <div class="deck-slide" data-slide="5">
+        <div class="badge" style="margin-bottom:16px; align-self:flex-start;">CHIẾN LƯỢC VẬN HÀNH LOGISTICS</div>
+        <h2 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 25px;">Mô Hình 3 Lớp: Tránh Vết Xe Đổ Của Dunzo</h2>
+        
+        <div class="grid-3" style="width: 100%;">
+          <div class="card">
+            <span class="mini-badge">Giai đoạn 1 (MVP)</span>
+            <h3 style="margin-top:10px;">Lớp A: Quán Tự Giao / Pickup</h3>
+            <p style="font-size:0.95rem;">Khách ở gần tự ghé lấy hoặc quán tự giao xe đạp/xe máy. Không tốn 1 đồng chi phí vận hành cho nền tảng.</p>
+          </div>
+          <div class="card" style="border-color:var(--emerald);">
+            <span class="mini-badge green">Cốt Lõi Tăng Trưởng</span>
+            <h3 style="margin-top:10px; color:var(--emerald);">Lớp B: Gom Đơn Khung Giờ</h3>
+            <p style="font-size:0.95rem;">Hệ thống gom đơn theo cụm 1km vào 11h30 và 17h30. Quán chạy 1 vòng giao hết đơn. Phí ship cực rẻ (5k).</p>
+          </div>
+          <div class="card">
+            <span class="mini-badge">Mở rộng có kiểm soát</span>
+            <h3 style="margin-top:10px;">Lớp C: Shipper Khu Phố</h3>
+            <p style="font-size:0.95rem;">Chỉ mở khi Lớp B có lãi bền vững. Shipper tự do theo cụm, trả theo chuyến, không nuôi quân lương cứng.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 6: Go-To-Market -->
+      <div class="deck-slide" data-slide="6">
+        <div class="badge emerald" style="margin-bottom:16px; align-self:flex-start;">GO-TO-MARKET & TRAFFIC TỰ NHIÊN</div>
+        <h2 style="font-size: 2.8rem; font-weight: 800; margin-bottom: 25px;">Kế Hoạch 30 Ngày & 4 Trụ Cột Content</h2>
+        
+        <div class="grid-2" style="width: 100%;">
+          <div class="card">
+            <h3>4 Trụ Nội Dung Natural Traffic (TikTok / Reels)</h3>
+            <ul style="color:var(--text-muted); font-size:0.95rem; line-height:1.9; list-style-position:inside;">
+              <li><strong>Nỗi đau quán nhỏ:</strong> "Quán này bán 100k, app lấy bao nhiêu?"</li>
+              <li><strong>Câu chuyện quán quen:</strong> Món ngon núp hẻm và tâm sự chủ quán.</li>
+              <li><strong>Build In Public:</strong> Quay lại hành trình phỏng vấn và chạy đơn gom cùng quán.</li>
+              <li><strong>Mẹo bán hàng:</strong> Cách quán nhỏ giữ chân khách không cần đốt tiền ads.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Lộ Trình Nhân Rộng Từng Phường</h3>
+            <p style="font-size:0.95rem; color:var(--text-muted); line-height:1.8;">
+              • <strong>Tháng 1:</strong> Phỏng vấn 20–30 quán, kiểm chứng nhu cầu gom đơn tại 1 phường.<br>
+              • <strong>Tháng 2:</strong> Vận hành chính thức trang đặt hàng, gom đơn khung giờ cho 20 quán đầu.<br>
+              • <strong>Tháng 3:</strong> Đo tỷ lệ khách đặt lại qua app, đóng gói quy trình và nhân rộng sang phường lân cận.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 7: The First Step -->
+      <div class="deck-slide" data-slide="7">
+        <div class="badge amber" style="margin-bottom:16px; align-self:flex-start;">BƯỚC ĐI ĐẦU TIÊN</div>
+        <h2 style="font-size: 3.2rem; font-weight: 800; margin-bottom: 20px;">Hành Động Trước Khi Viết Bất Kỳ Dòng Code Nào</h2>
+        <div style="background: rgba(255, 90, 54, 0.1); border: 1px solid var(--primary); padding: 30px; border-radius: var(--radius-lg); max-width: 800px; margin-bottom: 30px;">
+          <h3 style="color:#fff; margin-bottom:14px; font-size:1.3rem;">3 Câu Hỏi Xác Thực Trực Tiếp Với 20 Chủ Quán:</h3>
+          <p style="font-size:1.15rem; line-height:1.8; color:var(--text-main);">
+            1. <em>"Hiện anh/chị đang mất bao nhiêu phần trăm cho các app giao hàng?"</em><br>
+            2. <em>"Nếu có 5 đơn gom sẵn trong khu vực bán kính 1km trưa nay, anh/chị có sẵn sàng tự chạy giao không?"</em><br>
+            3. <em>"Anh/chị có sẵn lòng trả phí cố định nhỏ hằng tháng cho công cụ quản lý khách quen và gom đơn không?"</em>
+          </p>
+        </div>
+        <button class="btn btn-primary" style="padding: 16px 36px; font-size: 1.1rem;" onclick="closePitchDeck(); openJoinModal();">
+          Đăng Ký Tham Gia Dự Án Ngay
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Deck Controls Footer -->
+    <div class="deck-footer-bar">
+      <div style="color:var(--text-muted); font-size:0.9rem;">
+        Slide <span id="deckCurrentNum" style="color:#fff; font-weight:700;">1</span> / <span id="deckTotalNum">7</span>
+      </div>
+
+      <div class="slide-indicators" id="deckDots">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <button class="btn btn-outline" style="padding: 8px 18px;" onclick="prevDeckSlide()">← Slide Trước</button>
+        <button class="btn btn-primary" style="padding: 8px 18px;" onclick="nextDeckSlide()">Slide Sau →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT LOGIC
+       ========================================================================== -->
+  <script>
+    // -------------------------------------------------------------
+    // Simulator Switcher (Customer vs Merchant)
+    // -------------------------------------------------------------
+    function switchPhoneTab(tab) {
+      const tabCustomer = document.getElementById('tabCustomer');
+      const tabMerchant = document.getElementById('tabMerchant');
+      const viewCustomer = document.getElementById('viewCustomer');
+      const viewMerchant = document.getElementById('viewMerchant');
+
+      if (tab === 'customer') {
+        tabCustomer.classList.add('active');
+        tabCustomer.classList.remove('merchant');
+        tabMerchant.classList.remove('active', 'merchant');
+        viewCustomer.classList.add('active');
+        viewMerchant.classList.remove('active');
+      } else {
+        tabMerchant.classList.add('active', 'merchant');
+        tabCustomer.classList.remove('active');
+        viewCustomer.classList.remove('active');
+        viewMerchant.classList.add('active');
+      }
+    }
+
+    // Customer Delivery Option in Simulator
+    function selectDeliveryOpt(type) {
+      const btnBatch = document.getElementById('btnBatchOpt');
+      const btnPickup = document.getElementById('btnPickupOpt');
+
+      if (type === 'batch') {
+        btnBatch.classList.add('active');
+        btnPickup.classList.remove('active');
+        btnBatch.querySelector('span:last-child').textContent = '✓';
+        btnPickup.querySelector('span:last-child').textContent = '';
+      } else {
+        btnPickup.classList.add('active');
+        btnBatch.classList.remove('active');
+        btnPickup.querySelector('span:last-child').textContent = '✓';
+        btnBatch.querySelector('span:last-child').textContent = '';
+      }
+    }
+
+    let cartCount = 0;
+    let cartTotal = 0;
+    function addToSimCart(name, price) {
+      cartCount++;
+      cartTotal += price;
+      const cartBar = document.getElementById('simCartBar');
+      const cartText = document.getElementById('cartCountText');
+      cartText.textContent = `${cartCount} món • ${cartTotal.toLocaleString('vi-VN')}đ`;
+      cartBar.style.transform = 'scale(1.05)';
+      setTimeout(() => { cartBar.style.transform = 'scale(1)'; }, 200);
+    }
+
+    // -------------------------------------------------------------
+    // Interactive Unit Economics Calculator
+    // -------------------------------------------------------------
+    function calculateEconomics() {
+      const revInput = document.getElementById('revRange');
+      const revenue = parseInt(revInput.value);
+
+      document.getElementById('revValLabel').textContent = revenue.toLocaleString('vi-VN') + ' đ';
+
+      // Traditional App: 28% commission
+      const appCommission = revenue * 0.28;
+      const appKeep = revenue - appCommission;
+
+      // Nha Minh: 199k fixed subscription
+      const nhaMinhFee = 199000;
+      const nhaMinhSavings = appCommission - nhaMinhFee;
+
+      document.getElementById('appLossVal').textContent = '-' + appCommission.toLocaleString('vi-VN') + ' đ';
+      document.getElementById('appKeepVal').textContent = appKeep.toLocaleString('vi-VN') + ' đ';
+      document.getElementById('savingsVal').textContent = '+' + (nhaMinhSavings > 0 ? nhaMinhSavings.toLocaleString('vi-VN') : 0) + ' đ';
+    }
+
+    // Initial calculation
+    calculateEconomics();
+
+    // -------------------------------------------------------------
+    // Pitch Deck Presentation Mode
+    // -------------------------------------------------------------
+    let currentSlide = 1;
+    const totalSlides = 7;
+    const deckContainer = document.getElementById('pitchDeckContainer');
+    const openPitchBtn = document.getElementById('openPitchBtn');
+
+    openPitchBtn.addEventListener('click', openPitchDeck);
+
+    function openPitchDeck() {
+      deckContainer.classList.add('active');
+      document.body.style.overflow = 'hidden';
+      initDeckDots();
+      goToDeckSlide(1);
+    }
+
+    function closePitchDeck() {
+      deckContainer.classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    function initDeckDots() {
+      const dotsBox = document.getElementById('deckDots');
+      dotsBox.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const dot = document.createElement('div');
+        dot.className = `slide-dot ${i === currentSlide ? 'active' : ''}`;
+        dot.onclick = () => goToDeckSlide(i);
+        dotsBox.appendChild(dot);
+      }
+    }
+
+    function goToDeckSlide(index) {
+      if (index < 1 || index > totalSlides) return;
+      currentSlide = index;
+
+      document.querySelectorAll('.deck-slide').forEach(slide => {
+        slide.classList.remove('current');
+      });
+
+      const activeSlide = document.querySelector(`.deck-slide[data-slide="${index}"]`);
+      if (activeSlide) activeSlide.classList.add('current');
+
+      document.getElementById('deckCurrentNum').textContent = index;
+
+      // Update dots
+      const dots = document.querySelectorAll('.slide-dot');
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle('active', idx + 1 === index);
+      });
+    }
+
+    function nextDeckSlide() {
+      if (currentSlide < totalSlides) {
+        goToDeckSlide(currentSlide + 1);
+      }
+    }
+
+    function prevDeckSlide() {
+      if (currentSlide > 1) {
+        goToDeckSlide(currentSlide - 1);
+      }
+    }
+
+    function toggleDeckFullscreen() {
+      if (!document.fullscreenElement) {
+        deckContainer.requestFullscreen().catch(err => {
+          console.warn(`Fullscreen error: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // Keyboard navigation
+    window.addEventListener('keydown', (e) => {
+      if (deckContainer.classList.contains('active')) {
+        if (e.key === 'ArrowRight' || e.key === 'Space') {
+          nextDeckSlide();
+        } else if (e.key === 'ArrowLeft') {
+          prevDeckSlide();
+        } else if (e.key === 'Escape') {
+          closePitchDeck();
+        }
+      }
+    });
+
+    // -------------------------------------------------------------
+    // Modal Helpers
+    // -------------------------------------------------------------
+    function openJoinModal() {
+      document.getElementById('joinModal').classList.add('open');
+    }
+
+    function closeJoinModal(e) {
+      document.getElementById('joinModal').classList.remove('open');
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      alert('Cảm ơn bạn! Đội ngũ Nhà Mình sẽ liên hệ với quán trong vòng 24h để hỗ trợ lên món và chuẩn bị thử nghiệm.');
+      closeJoinModal();
+    }
+  </script>
+</body>
+</html>
