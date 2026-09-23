@@ -1,0 +1,1745 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhà Mình - Kiến Trúc & Đặc Tả Tính Năng MVP | Tech Presentation</title>
+    <meta name="description"
+        content="Tài liệu trình chiếu kiến trúc kỹ thuật, luồng nghiệp vụ và đặc tả tính năng MVP của nền tảng kết nối quán địa phương Nhà Mình dành cho Tech Team & Developers.">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+       CSS Variables & Design Tokens (Consistent with index.html)
+       ========================================================================== */
+        :root {
+            --primary: #FF5A36;
+            --primary-hover: #E0401B;
+            --primary-soft: rgba(255, 90, 54, 0.12);
+            --primary-glow: rgba(255, 90, 54, 0.35);
+
+            --emerald: #10B981;
+            --emerald-hover: #059669;
+            --emerald-soft: rgba(16, 185, 129, 0.12);
+
+            --amber: #F59E0B;
+            --amber-soft: rgba(245, 158, 11, 0.12);
+
+            --cyan: #06B6D4;
+            --cyan-soft: rgba(6, 182, 212, 0.12);
+
+            --purple: #8B5CF6;
+            --purple-soft: rgba(139, 92, 246, 0.12);
+
+            --bg-dark: #0B0F19;
+            --bg-darker: #070A11;
+            --bg-card: rgba(22, 28, 45, 0.75);
+            --bg-card-hover: rgba(30, 41, 67, 0.85);
+            --bg-card-border: rgba(255, 255, 255, 0.08);
+            --bg-card-border-active: rgba(255, 90, 54, 0.4);
+
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --text-dim: #64748B;
+
+            --radius-sm: 8px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 30px;
+            --radius-full: 9999px;
+
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.35);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.5);
+            --shadow-glow: 0 0 35px var(--primary-glow);
+
+            --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            --font-code: 'JetBrains Mono', monospace;
+        }
+
+        /* Reset & Base */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 12% 15%, rgba(255, 90, 54, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 88% 25%, rgba(16, 185, 129, 0.07) 0%, transparent 45%),
+                radial-gradient(circle at 50% 85%, rgba(6, 182, 212, 0.06) 0%, transparent 50%);
+            background-attachment: fixed;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            outline: none;
+            background: none;
+        }
+
+        code,
+        pre {
+            font-family: var(--font-code);
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(11, 15, 25, 0.6);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            background: var(--primary-soft);
+            color: var(--primary);
+            border: 1px solid rgba(255, 90, 54, 0.25);
+        }
+
+        .badge.emerald {
+            background: var(--emerald-soft);
+            color: var(--emerald);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .badge.amber {
+            background: var(--amber-soft);
+            color: var(--amber);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .badge.cyan {
+            background: var(--cyan-soft);
+            color: var(--cyan);
+            border-color: rgba(6, 182, 212, 0.3);
+        }
+
+        .badge.purple {
+            background: var(--purple-soft);
+            color: var(--purple);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, #E0401B 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 90, 54, 0.5);
+        }
+
+        .btn-outline {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--bg-card-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-emerald {
+            background: linear-gradient(135deg, var(--emerald) 0%, #059669 100%);
+            color: #fff;
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-emerald:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.45);
+        }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
+
+        /* Gradients & Text */
+        .highlight-gradient {
+            background: linear-gradient(135deg, #FF7A59 0%, var(--primary) 50%, #FF3D12 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .emerald-gradient {
+            background: linear-gradient(135deg, #34D399 0%, var(--emerald) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .cyan-gradient {
+            background: linear-gradient(135deg, #38BDF8 0%, var(--cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Card System */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            backdrop-filter: blur(16px);
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.18);
+            background: var(--bg-card-hover);
+            transform: translateY(-2px);
+        }
+
+        .card.active-border {
+            border-color: var(--primary);
+            box-shadow: 0 0 25px rgba(255, 90, 54, 0.2);
+        }
+
+        /* Top Presentation Bar */
+        .presentation-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: rgba(11, 15, 25, 0.92);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--bg-card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            z-index: 1000;
+        }
+
+        .brand-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--primary) 0%, #FF8A65 100%);
+            border-radius: 9px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: white;
+            box-shadow: 0 4px 12px var(--primary-glow);
+        }
+
+        .brand-title {
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: -0.4px;
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Main Deck Stage */
+        .deck-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-top: 60px;
+            padding-bottom: 70px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .deck-viewport {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 20px 40px;
+            overflow-y: auto;
+        }
+
+        .slide {
+            position: absolute;
+            inset: 20px 40px;
+            max-width: 1220px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.97) translateY(18px);
+            transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: scale(1) translateY(0);
+            position: relative;
+            inset: auto;
+            width: 100%;
+        }
+
+        /* Slide Footer Controls */
+        .deck-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(11, 15, 25, 0.94);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--bg-card-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 1000;
+        }
+
+        .progress-track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--emerald) 50%, var(--cyan) 100%);
+            transition: width 0.3s ease;
+            width: 10%;
+        }
+
+        .slide-dots {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .slide-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.18);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .slide-dot:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .slide-dot.active {
+            background: var(--primary);
+            width: 26px;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* Layout Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        /* Interactive Elements inside Slides */
+        .tab-pills {
+            display: flex;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px;
+            border-radius: var(--radius-full);
+            width: fit-content;
+            margin-bottom: 16px;
+            border: 1px solid var(--bg-card-border);
+        }
+
+        .tab-pill {
+            padding: 6px 16px;
+            border-radius: var(--radius-full);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .tab-pill.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        /* Speaker Notes Drawer */
+        .notes-drawer {
+            position: fixed;
+            bottom: 70px;
+            right: 24px;
+            width: 360px;
+            max-height: 280px;
+            background: rgba(17, 24, 39, 0.95);
+            border: 1px solid rgba(255, 90, 54, 0.3);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            box-shadow: var(--shadow-lg);
+            z-index: 999;
+            display: none;
+            backdrop-filter: blur(20px);
+            animation: slideUp 0.25s ease;
+            overflow-y: auto;
+        }
+
+        .notes-drawer.open {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(12px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Interactive Simulator Box */
+        .interactive-simulator {
+            background: rgba(11, 15, 25, 0.8);
+            border: 1px solid var(--bg-card-border);
+            border-radius: var(--radius-md);
+            padding: 18px;
+        }
+
+        /* Code block styling */
+        .code-box {
+            background: #080C15;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            font-family: var(--font-code);
+            font-size: 0.82rem;
+            color: #E2E8F0;
+            line-height: 1.5;
+            overflow-x: auto;
+        }
+
+        .code-keyword {
+            color: #F43F5E;
+            font-weight: 600;
+        }
+
+        .code-string {
+            color: #10B981;
+        }
+
+        .code-type {
+            color: #38BDF8;
+        }
+
+        .code-comment {
+            color: #64748B;
+            font-style: italic;
+        }
+
+        /* Timeline Stepper */
+        .stepper {
+            display: flex;
+            gap: 16px;
+            position: relative;
+        }
+
+        .step-item {
+            flex: 1;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: var(--radius-md);
+            padding: 18px;
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .step-item:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .step-number {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--primary-soft);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 90, 54, 0.3);
+        }
+
+        /* Full Document View Overlay */
+        #docViewModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(8, 11, 18, 0.98);
+            backdrop-filter: blur(25px);
+            z-index: 2000;
+            padding: 40px 24px;
+            overflow-y: auto;
+        }
+
+        #docViewModal.open {
+            display: block;
+        }
+
+        .doc-container {
+            max-width: 960px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--bg-card-border);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .slide {
+                inset: 10px 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+
+            .presentation-nav {
+                padding: 0 12px;
+            }
+
+            .brand-title {
+                display: none;
+            }
+
+            .deck-footer {
+                padding: 0 12px;
+            }
+
+            .slide-dots {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==========================================================================
+       TOP PRESENTATION NAVIGATION BAR
+       ========================================================================== -->
+    <header class="presentation-nav">
+        <div class="brand-group">
+            <div class="brand-icon">NM</div>
+            <div>
+                <div class="brand-title">Nhà Mình — Tech Deck</div>
+                <div style="font-size: 0.72rem; color: var(--emerald); font-weight: 600;">MVP Product & Architecture
+                    Specs</div>
+            </div>
+        </div>
+
+        <!-- Quick Jump Slide Selector -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <select id="slideSelect" onchange="goToSlide(parseInt(this.value))"
+                style="background: rgba(255,255,255,0.06); border: 1px solid var(--bg-card-border); color: #fff; padding: 6px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; outline: none; cursor: pointer;">
+                <option value="1">1. Giới thiệu & Khái quát MVP</option>
+                <option value="2">2. Mục tiêu kỹ thuật & Giới hạn phạm vi</option>
+                <option value="3">3. Kiến trúc hệ thống & Tech Stack</option>
+                <option value="4">4. Phân hệ 1: Trải nghiệm Khách hàng</option>
+                <option value="5">5. Phân hệ 2: App Quán & POS Alert Engine</option>
+                <option value="6">6. Thiết kế Database Schema & ERD</option>
+                <option value="7">7. State Machine Đơn Hàng & Luồng VietQR</option>
+                <option value="8">8. Yêu cầu phi chức năng & Bảo mật</option>
+                <option value="9">9. Lộ trình 4 Sprint phát triển (4-6 tuần)</option>
+                <option value="10">10. Tiêu chí nghiệm thu (DoD) & Thảo luận</option>
+            </select>
+        </div>
+
+        <div class="nav-controls">
+            <button class="btn btn-outline btn-sm" onclick="toggleNotes()" title="Bật/Tắt ghi chú trình bày (Phím N)">
+                📝 Speaker Notes
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="toggleFullscreen()" title="Chế độ toàn màn hình (Phím F)">
+                ⛶ Fullscreen
+            </button>
+            <a href="index.html" class="btn btn-outline btn-sm" title="Về trang giới thiệu dự án">
+                🏠 Trang Chủ
+            </a>
+            <button class="btn btn-primary btn-sm" onclick="openDocView()">
+                📄 Toàn Văn PRD
+            </button>
+        </div>
+    </header>
+
+    <!-- ==========================================================================
+       MAIN PRESENTATION STAGE (SLIDE DECK)
+       ========================================================================== -->
+    <main class="deck-container">
+        <div class="deck-viewport">
+
+            <!-- -------------------------------------------------------------
+           SLIDE 1: COVER / TITLE
+           ------------------------------------------------------------- -->
+            <section class="slide active" data-slide="1">
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <span class="badge">TECH TEAM PRESENTATION</span>
+                    <span class="badge emerald">PILOT 1 CLUSTER (20-30 QUÁN)</span>
+                    <span class="badge amber">0% HOA HỒNG ĐƠN HÀNG</span>
+                </div>
+
+                <h1
+                    style="font-size: clamp(2.4rem, 4.5vw, 3.8rem); line-height: 1.15; font-weight: 800; margin-bottom: 20px;">
+                    Đặc Tả Tính Năng & <br>
+                    <span class="highlight-gradient">Kiến Trúc Kỹ Thuật MVP</span>
+                </h1>
+
+                <p
+                    style="font-size: 1.25rem; color: var(--text-muted); max-width: 820px; line-height: 1.6; margin-bottom: 32px;">
+                    Tài liệu bàn giao cho Tech Lead, Backend, Frontend và Mobile Dev. Xây dựng nền tảng kết nối quán địa
+                    phương không hoa hồng, kiểm chứng hành vi giữ chân người dùng trong 4–6 tuần.
+                </p>
+
+                <div class="grid-3" style="margin-bottom: 28px;">
+                    <div class="card" style="border-left: 3px solid var(--primary);">
+                        <div
+                            style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">
+                            Thời gian phát triển</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: #fff; margin-top: 4px;">4 – 6 Tuần</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">4 Sprint gọn, tập trung luồng lõi
+                        </div>
+                    </div>
+                    <div class="card" style="border-left: 3px solid var(--emerald);">
+                        <div
+                            style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">
+                            Hạ tầng Logistics Lớp A</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--emerald); margin-top: 4px;">Tự
+                            Giao / Pickup</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">0 chi phí đội xe cho nền tảng</div>
+                    </div>
+                    <div class="card" style="border-left: 3px solid var(--cyan);">
+                        <div
+                            style="font-size: 0.8rem; color: var(--text-dim); text-transform: uppercase; font-weight: 700;">
+                            Cơ chế thanh toán</div>
+                        <div style="font-size: 1.5rem; font-weight: 800; color: var(--cyan); margin-top: 4px;">VietQR
+                            Trực Tiếp</div>
+                        <div style="font-size: 0.85rem; color: var(--text-muted);">Zero Escrow, tiền vào thẳng quán
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="btn btn-primary" onclick="nextSlide()">
+                        Bắt Đầu Trình Chiếu →
+                    </button>
+                    <span style="font-size: 0.85rem; color: var(--text-dim);">Dùng phím <kbd
+                            style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; color:#fff;">→</kbd>
+                        hoặc <kbd
+                            style="background:rgba(255,255,255,0.1); padding:2px 6px; border-radius:4px; color:#fff;">Space</kbd>
+                        để qua slide tiếp theo</span>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 2: TECH GUARDRAILS & MVP SCOPE
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="2">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge amber">PHẠM VI KỸ THUẬT</span>
+                    <span class="badge">GUARDRAILS</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    Mục Tiêu Kỹ Thuật & Giới Hạn Phạm Vi MVP
+                </h2>
+                <p style="color: var(--text-muted); margin-bottom: 24px;">
+                    Những quyết định kiến trúc giúp đội ngũ phát triển nhanh, giảm tối đa rủi ro pháp lý và chi phí vận
+                    hành.
+                </p>
+
+                <div class="grid-2">
+                    <div class="card" style="border-color: rgba(16, 185, 129, 0.35);">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                            <span style="font-size: 1.4rem;">🎯</span>
+                            <h3 style="color: var(--emerald); font-size: 1.15rem;">TRỌNG TÂM CẦN LÀM XUẤT SẮC (IN SCOPE)
+                            </h3>
+                        </div>
+                        <ul
+                            style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 0.92rem; color: var(--text-main);">
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald); font-weight: bold;">✓</span>
+                                <span><strong>Chuông báo đơn hàng mới kiểu máy POS:</strong> Đổ chuông to, rung liên tục
+                                    cho đến khi chủ quán bấm nhận đơn (Latency &lt; 2s).</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald); font-weight: bold;">✓</span>
+                                <span><strong>Menu chuyên nghiệp &amp; Toggle hết hàng:</strong> Khắc phục sự lộn xộn
+                                    của Zalo, cho phép chủ quán tắt món hết hàng trong 1 chạm.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald); font-weight: bold;">✓</span>
+                                <span><strong>Geofencing Cụm Phường:</strong> Giới hạn bán kính giao 1–3km để quán tự
+                                    chạy xe máy/xe đạp giao được hoặc khách tự đến lấy.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald); font-weight: bold;">✓</span>
+                                <span><strong>Tính năng chống rò rỉ:</strong> Đặt lại 1 chạm (1-click reorder), Thẻ tích
+                                    điểm tem điện tử, Lưu quán quen.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="border-color: rgba(239, 68, 68, 0.35);">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                            <span style="font-size: 1.4rem;">🛑</span>
+                            <h3 style="color: #F87171; font-size: 1.15rem;">TUYỆT ĐỐI CHƯA LÀM Ở MVP (OUT OF SCOPE)</h3>
+                        </div>
+                        <ul
+                            style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 0.92rem; color: var(--text-muted);">
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: #F87171; font-weight: bold;">✕</span>
+                                <span><strong>Không xây App Shipper / Dispatch Engine:</strong> Tránh vết xe đổ đốt tiền
+                                    logistics của Dunzo; MVP chỉ là Quán tự giao hoặc Tự lấy.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: #F87171; font-weight: bold;">✕</span>
+                                <span><strong>Không làm ví điện tử / Trung gian giữ tiền (Escrow):</strong> Tiền chạy
+                                    thẳng vào STK chủ quán qua VietQR, hệ thống không giữ quỹ.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: #F87171; font-weight: bold;">✕</span>
+                                <span><strong>Không tích hợp thuật toán gợi ý AI phức tạp:</strong> Sắp xếp đơn thuần
+                                    theo khoảng cách địa lý và danh mục đồ ăn.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: #F87171; font-weight: bold;">✕</span>
+                                <span><strong>Không triển khai đa cụm toàn quốc:</strong> Khóa cứng dữ liệu ở 1 cụm thử
+                                    nghiệm duy nhất.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 3: SYSTEM ARCHITECTURE & TECH STACK
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="3">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge cyan">KIẾN TRÚC HỆ THỐNG</span>
+                    <span class="badge">TECH STACK</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    Kiến Trúc Tổng Thể &amp; Lựa Chọn Công Nghệ
+                </h2>
+
+                <div class="grid-2" style="margin-bottom: 16px;">
+                    <!-- Arch Schema representation -->
+                    <div class="card" style="background: #0D1220;">
+                        <div
+                            style="font-weight: 700; color: var(--cyan); margin-bottom: 12px; display: flex; justify-content: space-between;">
+                            <span>SƠ ĐỒ PHÂN TẦNG HỆ THỐNG</span>
+                            <span class="badge cyan">REST + WEBSOCKET</span>
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem;">
+                            <div
+                                style="padding: 10px; background: rgba(255, 90, 54, 0.1); border: 1px dashed var(--primary); border-radius: 8px; text-align: center;">
+                                <strong>CLIENT APPS:</strong> Customer Web (Next.js PWA) • Customer &amp; Merchant
+                                Mobile App (Flutter) • Admin Dashboard (React)
+                            </div>
+                            <div style="text-align: center; color: var(--text-dim); font-size: 0.8rem;">▼ HTTP / HTTPS
+                                &amp; WSS (Persistent Real-time) ▼</div>
+                            <div
+                                style="padding: 10px; background: rgba(6, 182, 212, 0.1); border: 1px dashed var(--cyan); border-radius: 8px; text-align: center;">
+                                <strong>BACKEND SERVICES:</strong> NestJS (Node.js/TypeScript) REST API Gateway •
+                                WebSocket Gateway • FCM Notification Broker
+                            </div>
+                            <div style="text-align: center; color: var(--text-dim); font-size: 0.8rem;">▼ Queries /
+                                Pub-Sub ▼</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                                <div
+                                    style="padding: 8px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--emerald); border-radius: 6px; text-align: center;">
+                                    <strong>PostgreSQL</strong><br><span
+                                        style="font-size: 0.72rem; color: var(--text-muted);">PostGIS Geofence</span>
+                                </div>
+                                <div
+                                    style="padding: 8px; background: rgba(245, 158, 11, 0.1); border: 1px solid var(--amber); border-radius: 6px; text-align: center;">
+                                    <strong>Redis</strong><br><span
+                                        style="font-size: 0.72rem; color: var(--text-muted);">Cache &amp; Order
+                                        Queue</span>
+                                </div>
+                                <div
+                                    style="padding: 8px; background: rgba(139, 92, 246, 0.1); border: 1px solid var(--purple); border-radius: 6px; text-align: center;">
+                                    <strong>Cloudflare R2</strong><br><span
+                                        style="font-size: 0.72rem; color: var(--text-muted);">Menu Media Storage</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stack Details -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 12px; font-size: 1.1rem; color: #fff;">Lý do chọn Stack cho 4 tuần:
+                        </h3>
+                        <table
+                            style="width: 100%; border-collapse: collapse; font-size: 0.85rem; color: var(--text-muted);">
+                            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+                                <td style="padding: 8px 0; color: #fff; font-weight: 600;">Customer Web</td>
+                                <td style="padding: 8px 0; color: var(--primary);">Next.js / SSR PWA</td>
+                                <td style="padding: 8px 0;">Link chia sẻ trên Zalo tải nhanh &lt; 1.5s, tối ưu SEO quán.
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+                                <td style="padding: 8px 0; color: #fff; font-weight: 600;">Mobile Apps</td>
+                                <td style="padding: 8px 0; color: var(--emerald);">Flutter (iOS &amp; Android)</td>
+                                <td style="padding: 8px 0;">1 codebase, kiểm soát âm thanh chuông báo nền máy POS cực
+                                    tốt.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+                                <td style="padding: 8px 0; color: #fff; font-weight: 600;">Backend API</td>
+                                <td style="padding: 8px 0; color: var(--cyan);">NestJS (TypeScript)</td>
+                                <td style="padding: 8px 0;">Cấu trúc module rõ ràng, type-safe, tích hợp Socket.io &amp;
+                                    Swagger chuẩn.</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid var(--bg-card-border);">
+                                <td style="padding: 8px 0; color: #fff; font-weight: 600;">Database</td>
+                                <td style="padding: 8px 0; color: var(--purple);">PostgreSQL + PostGIS</td>
+                                <td style="padding: 8px 0;">Tính tọa độ `ST_DWithin` lọc quán &lt; 2km siêu tốc.</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; color: #fff; font-weight: 600;">Thanh toán</td>
+                                <td style="padding: 8px 0; color: var(--amber);">VietQR Napas 247</td>
+                                <td style="padding: 8px 0;">Tạo mã QR kèm mã đơn, không cần giấy phép thanh toán trung
+                                    gian.</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 4: CUSTOMER APP MODULE
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="4">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge emerald">PHÂN HỆ 1</span>
+                    <span class="badge">CUSTOMER EXPERIENCE</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    Trải Nghiệm Khách Hàng: Đặt Món Nhanh &amp; Giữ Chân
+                </h2>
+
+                <div class="grid-3">
+                    <div class="card">
+                        <div class="badge" style="margin-bottom: 10px;">1. Khám Phá &amp; Giá Gốc</div>
+                        <h3 style="font-size: 1.1rem; margin-bottom: 8px;">Định vị theo Cụm Phường</h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                            Tự động gợi ý các quán quen gần nhất (&lt; 2km). Gắn nhãn <strong
+                                style="color:var(--emerald);">"Giá Gốc Tại Quán"</strong> cam kết rẻ hơn 25–30% so với
+                            app lớn.
+                        </p>
+                        <div
+                            style="padding: 8px; background: rgba(16, 185, 129, 0.08); border-radius: 6px; font-size: 0.8rem; color: var(--emerald);">
+                            💡 <em>Tăng chuyển đổi mua hàng ngay lần đầu truy cập.</em>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="badge cyan" style="margin-bottom: 10px;">2. Giỏ Hàng &amp; Checkout</div>
+                        <h3 style="font-size: 1.1rem; margin-bottom: 8px;">2 Hình Thức Nhận Hàng</h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                            • <strong>Quán tự giao:</strong> Tính phí ship riêng của quán (5k–10k hoặc freeship).<br>
+                            • <strong>Tự ghé lấy (Pickup):</strong> Chọn giờ lấy sau 15–30p, phí ship = 0đ.
+                        </p>
+                        <div
+                            style="padding: 8px; background: rgba(6, 182, 212, 0.08); border-radius: 6px; font-size: 0.8rem; color: var(--cyan);">
+                            💳 <em>VietQR động tự điền STK quán &amp; số tiền chuẩn xác.</em>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="badge amber" style="margin-bottom: 10px;">3. Chống Rò Rỉ Zalo</div>
+                        <h3 style="font-size: 1.1rem; margin-bottom: 8px;">1-Click Reorder &amp; Thẻ Tem</h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 12px;">
+                            • <strong>Đặt lại 1 chạm:</strong> Lưu món quen, đặt lại trưa hàng ngày trong 5 giây.<br>
+                            • <strong>Thẻ tích điểm điện tử:</strong> Mua 10 phần tích 10 tem, nhận ưu đãi độc quyền
+                            trên app.
+                        </p>
+                        <div
+                            style="padding: 8px; background: rgba(245, 158, 11, 0.08); border-radius: 6px; font-size: 0.8rem; color: var(--amber);">
+                            🔁 <em>Lý do khách tiếp tục mở app thay vì nhắn ngoài.</em>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card"
+                    style="margin-top: 18px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 1.4rem;">📱</span>
+                        <span style="font-size: 0.9rem; color: var(--text-main);">
+                            <strong>Tracking Trạng Thái Đơn Thời Gian Thực:</strong> Khách theo dõi từng bước từ <code
+                                class="code-keyword">PENDING</code> → <code class="code-keyword">PREPARING</code> →
+                            <code class="code-keyword">DELIVERING</code> mà không cần gọi hỏi Zalo.
+                        </span>
+                    </div>
+                    <span class="badge emerald">WEBSOCKET PUSH</span>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 5: MERCHANT APP & POS ALERT ENGINE
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="5">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge">PHÂN HỆ 2</span>
+                    <span class="badge amber">TRẢI NGHIỆM SINH TỬ</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    App Quán &amp; Động Cơ Chuông Báo Đơn (POS Alert)
+                </h2>
+
+                <div class="grid-2">
+                    <div class="card" style="border-left: 4px solid var(--primary);">
+                        <h3 style="color: var(--primary); margin-bottom: 10px; font-size: 1.2rem;">🚨 Cơ Chế Nhận Đơn
+                            POS Real-time</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px;">
+                            Nếu quán bỏ lỡ đơn, khách sẽ lập tức bỏ app sang Zalo hoặc app lớn. Đây là tính năng cốt tử
+                            của Mobile Dev:
+                        </p>
+                        <ul
+                            style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--primary);">🔊</span>
+                                <span><strong>Chuông reo to &amp; rung liên tục:</strong> Kể cả khi tắt màn hình
+                                    (Wake-lock Audio).</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--primary);">⏱️</span>
+                                <span><strong>Đếm ngược 3 phút nhận đơn:</strong> Hiển thị to rõ trên Live Order
+                                    Board.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--primary);">⚡</span>
+                                <span><strong>Fallback Dự Phòng:</strong> Nếu WebSocket ngắt kết nối &gt; 10s, kích hoạt
+                                    ngay Firebase High-Priority Push Notification.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="border-left: 4px solid var(--emerald);">
+                        <h3 style="color: var(--emerald); margin-bottom: 10px; font-size: 1.2rem;">🛠️ Bộ Công Cụ Dễ
+                            Dùng Cho Chủ Quán</h3>
+                        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 14px;">
+                            Chủ quán lớn tuổi, tiệm làm tại nhà cần thao tác cực kỳ đơn giản:
+                        </p>
+                        <ul
+                            style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem;">
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald);">✓</span>
+                                <span><strong>Gạt tắt món hết hàng trong 1 chạm:</strong> Hết nguyên liệu bấm tắt ngay,
+                                    không lo khách đặt nhầm.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald);">✓</span>
+                                <span><strong>Cấu hình bán kính &amp; ship riêng:</strong> Chọn bán kính giao (ví dụ
+                                    1.5km), đặt giá ship hoặc freeship.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald);">✓</span>
+                                <span><strong>Xem danh sách Khách Quen &amp; Doanh Thu:</strong> Biết khách nào hay đặt
+                                    để chăm sóc.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Interactive Ringtone Test Box -->
+                <div class="interactive-simulator"
+                    style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between;">
+                    <div>
+                        <div style="font-weight: 700; color: #fff;">Giả lập luồng đơn đến máy chủ quán (Simulated POS
+                            Alert)</div>
+                        <div style="font-size: 0.82rem; color: var(--text-muted);">Thử nghiệm âm thanh chuông thông báo
+                            và pop-up tiếp nhận đơn hàng</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="simulateNewOrderAlert()">
+                        🔔 Thử Chuông Báo Đơn Mới
+                    </button>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 6: DATABASE SCHEMA & ERD
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="6">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge purple">CƠ SỞ DỮ LIỆU</span>
+                    <span class="badge">SCHEMA &amp; ERD</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    Thiết Kế Database Schema Chuẩn (PostgreSQL)
+                </h2>
+
+                <div class="grid-2">
+                    <!-- Schema Viewer -->
+                    <div class="code-box" style="height: 380px;">
+                        <div class="code-comment">-- 7 Bảng Cốt Lõi MVP trong PostgreSQL (PostGIS enabled)</div>
+                        <br>
+                        <span class="code-keyword">CREATE TABLE</span> <span class="code-type">stores</span> (<br>
+                        &nbsp;&nbsp;id <span class="code-type">UUID PRIMARY KEY</span>,<br>
+                        &nbsp;&nbsp;owner_id <span class="code-type">UUID REFERENCES users(id)</span>,<br>
+                        &nbsp;&nbsp;name <span class="code-type">VARCHAR(255) NOT NULL</span>,<br>
+                        &nbsp;&nbsp;location <span class="code-type">GEOGRAPHY(Point, 4326)</span>, <span
+                            class="code-comment">-- PostGIS GPS</span><br>
+                        &nbsp;&nbsp;delivery_radius_km <span class="code-type">NUMERIC(3,1) DEFAULT 2.0</span>,<br>
+                        &nbsp;&nbsp;fixed_shipping_fee <span class="code-type">NUMERIC(10,2) DEFAULT 0</span>,<br>
+                        &nbsp;&nbsp;bank_code <span class="code-type">VARCHAR(20)</span>, bank_account_no <span
+                            class="code-type">VARCHAR(50)</span>,<br>
+                        &nbsp;&nbsp;is_open <span class="code-type">BOOLEAN DEFAULT TRUE</span><br>
+                        );<br><br>
+                        <span class="code-keyword">CREATE TABLE</span> <span class="code-type">orders</span> (<br>
+                        &nbsp;&nbsp;id <span class="code-type">UUID PRIMARY KEY</span>,<br>
+                        &nbsp;&nbsp;order_code <span class="code-type">VARCHAR(20) UNIQUE</span>, <span
+                            class="code-comment">-- "NM-883921"</span><br>
+                        &nbsp;&nbsp;customer_id <span class="code-type">UUID</span>, store_id <span
+                            class="code-type">UUID</span>,<br>
+                        &nbsp;&nbsp;fulfillment_type <span class="code-type">VARCHAR(20)</span>, <span
+                            class="code-comment">-- 'DELIVERY' | 'PICKUP'</span><br>
+                        &nbsp;&nbsp;payment_method <span class="code-type">VARCHAR(20)</span>, <span
+                            class="code-comment">-- 'COD' | 'VIETQR'</span><br>
+                        &nbsp;&nbsp;subtotal <span class="code-type">NUMERIC(12,2)</span>, shipping_fee <span
+                            class="code-type">NUMERIC(10,2)</span>,<br>
+                        &nbsp;&nbsp;status <span class="code-type">VARCHAR(30)</span> <span class="code-keyword">NOT
+                            NULL</span><br>
+                        );
+                    </div>
+
+                    <!-- Table highlights -->
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div class="card" style="padding: 14px;">
+                            <strong style="color: var(--cyan);">1. users &amp; stores</strong>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                                Xác thực bằng SĐT (Firebase Phone Auth / OTP SMS). Store lưu tọa độ không gian PostGIS
+                                để truy vấn khoảng cách tức thời.
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px;">
+                            <strong style="color: var(--emerald);">2. products &amp; order_items</strong>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                                Quản lý món ăn, phân nhóm danh mục, giá gốc, cờ `is_available` bật/tắt nhanh trạng thái
+                                còn hàng/hết hàng.
+                            </p>
+                        </div>
+                        <div class="card" style="padding: 14px;">
+                            <strong style="color: var(--amber);">3. store_loyalty &amp; reviews</strong>
+                            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">
+                                Tích lũy tem điện tử `stamp_count` theo từng quán riêng biệt; đánh giá sao và nhận xét
+                                của khách sau khi hoàn thành đơn.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 7: STATE MACHINE & VIETQR
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="7">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge cyan">NGHIỆP VỤ ĐƠN HÀNG</span>
+                    <span class="badge">STATE MACHINE</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    Vòng Đời Đơn Hàng &amp; Tạo Mã VietQR Tự Động
+                </h2>
+
+                <!-- Interactive Order State Simulator -->
+                <div class="card" style="margin-bottom: 18px;">
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+                        Bấm vào từng trạng thái để xem sự kiện (Events), thông báo đẩy (Push) và hành động tương ứng:
+                    </div>
+
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;">
+                        <button class="btn btn-outline btn-sm active" id="btnState1"
+                            onclick="showStateDetail('PENDING')">1. PENDING (Chờ nhận)</button>
+                        <button class="btn btn-outline btn-sm" id="btnState2" onclick="showStateDetail('ACCEPTED')">2.
+                            ACCEPTED (Đã nhận)</button>
+                        <button class="btn btn-outline btn-sm" id="btnState3" onclick="showStateDetail('PREPARING')">3.
+                            PREPARING (Đang làm)</button>
+                        <button class="btn btn-outline btn-sm" id="btnState4" onclick="showStateDetail('DELIVERING')">4.
+                            DELIVERING / READY</button>
+                        <button class="btn btn-outline btn-sm" id="btnState5" onclick="showStateDetail('COMPLETED')">5.
+                            COMPLETED (Xong)</button>
+                    </div>
+
+                    <div id="stateDetailBox"
+                        style="background: rgba(11, 15, 25, 0.8); border: 1px solid var(--primary); padding: 16px; border-radius: var(--radius-sm); font-size: 0.9rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong style="color: var(--primary);" id="stateTitle">Trạng thái: PENDING (Chờ Quán Xác
+                                Nhận)</strong>
+                            <span class="badge" id="stateBadge">Sự kiện kích hoạt: Khách bấm Đặt</span>
+                        </div>
+                        <p id="stateDesc" style="color: var(--text-muted); line-height: 1.6;">
+                            Hệ thống gửi WebSocket event <code>order:created</code> đến App Quán. Điện thoại chủ quán
+                            phát chuông báo to liên tục, màn hình hiển thị bộ đếm lùi 3 phút nhận đơn.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- VietQR Box -->
+                <div class="card" style="border-color: rgba(16, 185, 129, 0.3);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h3 style="color: var(--emerald); font-size: 1.1rem; margin-bottom: 4px;">Cơ chế VietQR
+                                Napas 247: Zero Escrow</h3>
+                            <p style="font-size: 0.85rem; color: var(--text-muted);">
+                                Backend sinh mã QR động chứa: <code>STK Quán</code> + <code>Số tiền chính xác</code> +
+                                Cú pháp <code>NM [Mã Đơn]</code>. Quán nhận tiền ngay trong 3 giây.
+                            </p>
+                        </div>
+                        <span class="badge emerald" style="font-size: 0.9rem;">KHÔNG LO PHÁP LÝ VÍ ĐIỆN TỬ</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 8: NON-FUNCTIONAL REQUIREMENTS
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="8">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge amber">PHI CHỨC NĂNG</span>
+                    <span class="badge">HIỆU NĂNG &amp; BẢO MẬT</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    Yêu Cầu Phi Chức Năng (Non-Functional Specs)
+                </h2>
+
+                <div class="grid-3">
+                    <div class="card" style="border-top: 3px solid var(--primary);">
+                        <div style="font-size: 1.8rem; margin-bottom: 8px;">⚡</div>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 6px;">Độ Trễ Báo Đơn &lt; 2s</h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+                            Tốc độ từ khi khách ấn thanh toán đến khi máy chủ quán reo chuông không vượt quá 2 giây. Sử
+                            dụng WebSocket với cơ chế auto-reconnect.
+                        </p>
+                    </div>
+
+                    <div class="card" style="border-top: 3px solid var(--emerald);">
+                        <div style="font-size: 1.8rem; margin-bottom: 8px;">🚀</div>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 6px;">Tốc Độ Tải Web FCP &lt; 1.5s</h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+                            Web khách phải tải siêu nhẹ trên 4G di động. Bundle đầu tiên &lt; 300KB, nén Brotli, ảnh món
+                            ăn nén WebP tự động qua CDN.
+                        </p>
+                    </div>
+
+                    <div class="card" style="border-top: 3px solid var(--cyan);">
+                        <div style="font-size: 1.8rem; margin-bottom: 8px;">🛡️</div>
+                        <h3 style="font-size: 1.15rem; margin-bottom: 6px;">Bảo Mật SĐT &amp; RLS</h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">
+                            Ẩn SĐT khách hàng trước khi quán nhận đơn để tránh spam. Cấu hình Row-Level Security (RLS)
+                            để các quán hoàn toàn độc lập dữ liệu.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card"
+                    style="margin-top: 20px; background: rgba(139, 92, 246, 0.06); border-color: rgba(139, 92, 246, 0.3);">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span style="font-size: 1.5rem;">📱</span>
+                        <div>
+                            <div style="font-weight: 700; color: #fff;">Wake-Lock &amp; High-Priority Notification trên
+                                Mobile App:</div>
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">
+                                Mobile App trên thiết bị quán phải xin quyền vô hiệu hóa tối ưu pin (Disable Battery
+                                Optimization) để đảm bảo không bị hệ điều hành Android/iOS tắt tiến trình nền khi đang
+                                chờ đơn.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 9: SPRINT ROADMAP (4 TO 6 WEEKS)
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="9">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge">ROADMAP</span>
+                    <span class="badge emerald">4 SPRINTS</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    Kế Hoạch Triển Khai Trong 4–6 Tuần
+                </h2>
+
+                <div class="stepper" style="margin-bottom: 24px;">
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <strong style="color: #fff; font-size: 0.95rem;">Sprint 1 (Tuần 1–2)</strong>
+                        <div style="font-size: 0.78rem; color: var(--primary); font-weight: 700; margin-bottom: 6px;">
+                            CORE FOUNDATION</div>
+                        <ul
+                            style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; list-style-position: inside;">
+                            <li>Setup DB Postgres + PostGIS</li>
+                            <li>Auth Service SĐT (OTP SMS)</li>
+                            <li>Merchant Web: Tạo quán &amp; Menu</li>
+                            <li>Cấu hình phí ship &amp; bán kính</li>
+                        </ul>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <strong style="color: #fff; font-size: 0.95rem;">Sprint 2 (Tuần 3)</strong>
+                        <div style="font-size: 0.78rem; color: var(--emerald); font-weight: 700; margin-bottom: 6px;">
+                            CUSTOMER STOREFRONT</div>
+                        <ul
+                            style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; list-style-position: inside;">
+                            <li>Customer Web PWA: Geofence</li>
+                            <li>Trang Menu &amp; Giỏ hàng quán</li>
+                            <li>Chọn Quán tự giao / Đến lấy</li>
+                            <li>Sinh mã VietQR &amp; chọn COD</li>
+                        </ul>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">3</div>
+                        <strong style="color: #fff; font-size: 0.95rem;">Sprint 3 (Tuần 4)</strong>
+                        <div style="font-size: 0.78rem; color: var(--cyan); font-weight: 700; margin-bottom: 6px;">
+                            REALTIME POS ENGINE</div>
+                        <ul
+                            style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; list-style-position: inside;">
+                            <li>Socket Gateway nhận đơn tức thì</li>
+                            <li>App Quán chuông reo to đếm lùi</li>
+                            <li>Nhận / Huỷ đơn / Cập nhật trạng thái</li>
+                            <li>Tracking đơn real-time cho khách</li>
+                        </ul>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">4</div>
+                        <strong style="color: #fff; font-size: 0.95rem;">Sprint 4 (Tuần 5–6)</strong>
+                        <div style="font-size: 0.78rem; color: var(--purple); font-weight: 700; margin-bottom: 6px;">
+                            RETENTION &amp; PILOT UAT</div>
+                        <ul
+                            style="font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; list-style-position: inside;">
+                            <li>Đặt lại 1 chạm &amp; Thẻ tem tích điểm</li>
+                            <li>Admin Portal duyệt quán &amp; đo số liệu</li>
+                            <li>UAT thực địa 20 quán mục tiêu</li>
+                            <li>Fix bug &amp; Go-Live khu vực 1</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card"
+                    style="padding: 12px 18px; display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.88rem; color: var(--text-muted);">
+                        🎯 <strong>Cột mốc bàn giao:</strong> Kết thúc tuần thứ 6, 20 quán tại cụm thử nghiệm có thể mở
+                        bán trực tiếp cho cư dân xung quanh.
+                    </span>
+                    <span class="badge emerald">TARGET: 100% READY</span>
+                </div>
+            </section>
+
+            <!-- -------------------------------------------------------------
+           SLIDE 10: DEFINITION OF DONE & TECH ACTIONS
+           ------------------------------------------------------------- -->
+            <section class="slide" data-slide="10">
+                <div style="display: flex; gap: 10px; margin-bottom: 14px;">
+                    <span class="badge emerald">NGHIỆM THU</span>
+                    <span class="badge">ACTION ITEMS</span>
+                </div>
+                <h2 style="font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 800; margin-bottom: 14px;">
+                    Tiêu Chí Nghiệm Thu (DoD) &amp; Thảo Luận Kiến Trúc
+                </h2>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h3 style="color: #fff; margin-bottom: 12px; font-size: 1.15rem;">✅ Definition of Done (DoD)
+                        </h3>
+                        <ul
+                            style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem; color: var(--text-muted);">
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald);">✓</span>
+                                <span><strong>Khách:</strong> Tìm quán &lt; 2km, đặt món, quét VietQR chính xác, theo
+                                    dõi đơn real-time và đặt lại 1 chạm mượt mà.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald);">✓</span>
+                                <span><strong>Quán:</strong> Tắt bật món hết hàng &lt; 2 giây, chuông reo to rung mạnh
+                                    khi có đơn, đổi trạng thái đơn dễ dàng.</span>
+                            </li>
+                            <li style="display: flex; gap: 8px;">
+                                <span style="color: var(--emerald);">✓</span>
+                                <span><strong>Hệ thống:</strong> 0 bug blocker trong luồng đặt/nhận đơn, API latency
+                                    &lt; 200ms, push notification ổn định trên iOS/Android.</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card" style="border-color: rgba(245, 158, 11, 0.4);">
+                        <h3 style="color: var(--amber); margin-bottom: 12px; font-size: 1.15rem;">❓ Top 3 Quyết Định Cần
+                            Tech Team Chốt:</h3>
+                        <ol
+                            style="padding-left: 18px; display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem; color: var(--text-main);">
+                            <li>
+                                <strong>Mobile App:</strong> Chọn <em>Flutter</em> hay <em>React Native</em> cho việc xử
+                                lý chuông background máy POS? (Khuyến nghị: Flutter).
+                            </li>
+                            <li>
+                                <strong>Backend &amp; DB:</strong> Tự dựng <em>NestJS + Docker PostgreSQL</em> hay dùng
+                                <em>Supabase BaaS</em> để rút ngắn 1 tuần dựng DB &amp; Auth?
+                            </li>
+                            <li>
+                                <strong>Cổng SMS OTP:</strong> Dùng Firebase Phone Auth miễn phí ban đầu hay ký hợp đồng
+                                Zalo ZNS OTP ngay từ MVP?
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; display: flex; align-items: center; justify-content: center; gap: 16px;">
+                    <button class="btn btn-primary" style="padding: 14px 32px; font-size: 1rem;"
+                        onclick="openDocView()">
+                        Xem Chi Tiết Đặc Tả Kỹ Thuật (Full PRD)
+                    </button>
+                    <button class="btn btn-outline" style="padding: 14px 28px; font-size: 1rem;" onclick="goToSlide(1)">
+                        ↺ Về Lại Slide Đầu
+                    </button>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- -------------------------------------------------------------
+         SPEAKER NOTES DRAWER (FLOATING)
+         ------------------------------------------------------------- -->
+        <aside class="notes-drawer" id="notesDrawer">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <strong style="color: var(--primary); font-size: 0.9rem;">📝 Ghi Chú Trình Bày (Slide <span
+                        id="noteSlideNum">1</span>)</strong>
+                <button onclick="toggleNotes()"
+                    style="color: var(--text-dim); font-size: 1.2rem; line-height: 1;">&times;</button>
+            </div>
+            <div id="notesContent" style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.6;">
+                <!-- Filled by JS -->
+            </div>
+        </aside>
+
+        <!-- -------------------------------------------------------------
+         DECK FOOTER CONTROLS
+         ------------------------------------------------------------- -->
+        <footer class="deck-footer">
+            <div class="progress-track" id="progressTrack"></div>
+
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <span style="font-size: 0.9rem; color: var(--text-muted);">
+                    Slide <strong style="color:#fff;" id="currentSlideNum">1</strong> / <span
+                        id="totalSlideNum">10</span>
+                </span>
+                <span
+                    style="font-size: 0.78rem; color: var(--text-dim); border-left: 1px solid var(--bg-card-border); padding-left: 14px;">
+                    Nhấn <kbd style="background:rgba(255,255,255,0.1); padding:2px 5px; border-radius:3px;">←</kbd> <kbd
+                        style="background:rgba(255,255,255,0.1); padding:2px 5px; border-radius:3px;">→</kbd> để đổi
+                    slide
+                </span>
+            </div>
+
+            <div class="slide-dots" id="slideDotsBox">
+                <!-- Rendered by JS -->
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button class="btn btn-outline btn-sm" onclick="prevSlide()">← Trước</button>
+                <button class="btn btn-primary btn-sm" onclick="nextSlide()">Sau →</button>
+            </div>
+        </footer>
+    </main>
+
+    <!-- ==========================================================================
+       FULL DOCUMENT VIEW MODAL (ALL-IN-ONE PRD)
+       ========================================================================== -->
+    <div id="docViewModal">
+        <div class="doc-container">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid var(--bg-card-border); padding-bottom: 16px;">
+                <div>
+                    <span class="badge">TÀI LIỆU YÊU CẦU TÍNH NĂNG (PRD)</span>
+                    <h2 style="font-size: 1.8rem; font-weight: 800; margin-top: 6px;">Nhà Mình MVP — Bản Đầy Đủ</h2>
+                </div>
+                <button class="btn btn-outline btn-sm" onclick="closeDocView()">✕ Đóng Tài Liệu</button>
+            </div>
+
+            <div
+                style="display: flex; flex-direction: column; gap: 24px; font-size: 0.95rem; color: var(--text-muted); line-height: 1.7;">
+                <section>
+                    <h3 style="color: #fff; margin-bottom: 8px;">1. Tóm Tắt Dự Án</h3>
+                    <p>
+                        "Nhà Mình" là chợ online của quán địa phương, hoạt động theo mô hình <strong>0% hoa hồng trên
+                            từng đơn</strong>. Quán bán đúng giá gốc, tự giao xe máy/xe đạp hoặc khách tự đến lấy (Lớp
+                        A). Nền tảng không tốn chi phí logistics và giải quyết bài toán chống rò rỉ sang Zalo bằng bộ
+                        công cụ quản lý hàng ngày, tính năng đặt lại 1 chạm và thẻ tích điểm điện tử.
+                    </p>
+                </section>
+
+                <section>
+                    <h3 style="color: #fff; margin-bottom: 8px;">2. Phân Hệ Người Dùng &amp; Quyền Hạn</h3>
+                    <p>
+                        • <strong>Khách hàng (Customer):</strong> Định vị theo phường/cụm, xem thực đơn giá gốc, chọn
+                        Quán tự giao hoặc Đến lấy, quét VietQR thanh toán thẳng cho chủ quán, tích điểm thẻ tem.<br>
+                        • <strong>Chủ quán (Merchant):</strong> Tạo menu, gạt tắt món hết hàng trong 1 chạm, chuông báo
+                        đơn mới to rõ kiểu máy POS, quản lý khách quen và doanh thu.<br>
+                        • <strong>Quản trị viên (Super Admin):</strong> Cấu hình geofence khu vực thử nghiệm, duyệt quán
+                        mới, quản lý danh mục và theo dõi tỷ lệ khách đặt lại qua app.
+                    </p>
+                </section>
+
+                <section>
+                    <h3 style="color: #fff; margin-bottom: 8px;">3. Danh Sách API Endpoints Trọng Tâm</h3>
+                    <div class="code-box">
+                        GET /api/v1/zones/current/stores?lat=...&amp;lng=... (Lấy danh sách quán gần)<br>
+                        GET /api/v1/stores/:id/menu (Lấy thực đơn &amp; trạng thái món)<br>
+                        POST /api/v1/orders (Đặt đơn hàng mới &amp; sinh VietQR)<br>
+                        GET /api/v1/orders/:id/track (Theo dõi trạng thái đơn hàng)<br>
+                        PATCH /api/v1/merchant/orders/:id/status (Quán cập nhật: ACCEPT, PREPARE...)<br>
+                        POST /api/v1/merchant/menu/toggle-availability (Bật/tắt món hết hàng)
+                    </div>
+                </section>
+
+                <section>
+                    <h3 style="color: #fff; margin-bottom: 8px;">4. Liên Kết Tài Liệu Gốc</h3>
+                    <p>
+                        Xem tài liệu Markdown kỹ thuật đầy đủ tại:
+                        <a href="nha-minh-mvp-feature.md" style="color: var(--primary); text-decoration: underline;"
+                            target="_blank">nha-minh-mvp-feature.md</a>
+                        và tài liệu ý tưởng kinh doanh tại:
+                        <a href="nha-minh.md" style="color: var(--emerald); text-decoration: underline;"
+                            target="_blank">nha-minh.md</a>.
+                    </p>
+                </section>
+            </div>
+
+            <div style="margin-top: 30px; text-align: center;">
+                <button class="btn btn-primary" onclick="closeDocView()">Quay Lại Chế Độ Trình Chiếu Slide</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================================================
+       JAVASCRIPT PRESENTATION ENGINE
+       ========================================================================== -->
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 10;
+
+        // Speaker notes for each slide
+        const speakerNotes = {
+            1: "Mở đầu buổi họp: Nhấn mạnh mục tiêu MVP là kiểm chứng giữ chân khách và mức độ dùng của quán trong 1 cụm hẹp (20-30 quán). Không mở rộng vội. Nhấn mạnh 0% hoa hồng và 4 tuần sprint.",
+            2: "Guardrails kỹ thuật: Rất quan trọng để tránh scope creep. Tuyệt đối không làm ví điện tử (rủi ro pháp lý lớn) và không ôm đội shipper. Hãy dồn lực vào âm thanh chuông nhận đơn và độ mượt của menu.",
+            3: "Kiến trúc hệ thống: Giải thích lý do chọn Next.js PWA cho Web (khách bấm link Zalo phải mở được ngay, không ép tải app) và Flutter cho App Quán để kiểm soát chuông nền background.",
+            4: "Phân hệ Khách hàng: Nhấn mạnh huy hiệu 'Giá gốc tại quán' tạo động lực mua hàng, và tính năng 'Đặt lại 1 chạm' giải quyết thói quen ăn trưa lặp lại của dân văn phòng/cư dân.",
+            5: "Phân hệ Quán & POS Alert: Trọng tâm 'sinh tử'. Nếu quán để lỡ 2 đơn, họ sẽ không mở app nữa. Nhấn mạnh yêu cầu chuông báo to, rung liên tục và fallback push notification khẩn cấp.",
+            6: "Database & Schema: Trình bày cấu trúc 7 bảng. Điểm sáng là tọa độ PostGIS và cách liên kết bảng đơn hàng. Không cần quan hệ phức tạp ở giai đoạn 1.",
+            7: "State Machine & VietQR: Giải thích luồng trạng thái từ PENDING đến COMPLETED. Nhấn mạnh việc tạo mã VietQR Napas 247 không qua ví trung gian giúp dòng tiền an toàn tuyệt đối.",
+            8: "Phi chức năng: Yêu cầu trễ WebSocket < 2s và Web bundle < 300KB. Nhắc nhở Mobile Dev xin quyền quản lý năng lượng trên Android để chuông không bị tắt ngấm.",
+            9: "Kế hoạch 4 Sprint: Mỗi sprint 1 tuần hoặc 1.5 tuần. Tuần 1-2 xong khung, Tuần 3-4 hoàn thiện luồng đơn và chuông, Tuần 5-6 UAT thực tế trên 20 quán mục tiêu.",
+            10: "Tổng kết & Thảo luận: Hỏi ý kiến tech team về lựa chọn Flutter vs React Native, và quyết định tự dựng NestJS hay dùng Supabase để đẩy nhanh tiến độ."
+        };
+
+        // State machine simulator descriptions
+        const stateDetails = {
+            PENDING: {
+                title: "Trạng thái: PENDING (Chờ Quán Xác Nhận)",
+                badge: "Sự kiện: Khách vừa bấm Đặt",
+                desc: "Hệ thống phát socket event order:created. App Quán lập tức reo chuông to, rung máy và hiển thị đồng hồ đếm lùi 3 phút để chủ quán bấm 'Nhận Đơn' hoặc 'Từ Chối'."
+            },
+            ACCEPTED: {
+                title: "Trạng thái: ACCEPTED (Quán Đã Xác Nhận)",
+                badge: "Sự kiện: Quán bấm Nhận",
+                desc: "Tắt chuông báo. Gửi thông báo đến điện thoại khách 'Quán đã nhận đơn'. Nếu chọn VietQR, khách được nhắc quét mã chuyển khoản vào STK quán."
+            },
+            PREPARING: {
+                title: "Trạng thái: PREPARING (Đang Nấu / Đóng Gói)",
+                badge: "Sự kiện: Bếp bắt đầu làm món",
+                desc: "Món ăn đang được chế biến. Khách không thể huỷ đơn lúc này mà không gọi trực tiếp cho quán qua hotline."
+            },
+            DELIVERING: {
+                title: "Trạng thái: DELIVERING / READY_FOR_PICKUP",
+                badge: "Sự kiện: Hàng chuẩn bị xong",
+                desc: "Với đơn giao tận nơi: Quán tự xách xe đi giao. Với đơn tự lấy: Gửi thông báo 'Món của bạn đã sẵn sàng tại quán, mời ghé lấy'."
+            },
+            COMPLETED: {
+                title: "Trạng thái: COMPLETED (Giao Thành Công)",
+                badge: "Sự kiện: Đã nhận hàng & tiền",
+                desc: "Quán xác nhận đã thu đủ tiền. Khách nhận được 1 tem tích điểm điện tử trên app và pop-up mời đánh giá 5 sao cho quán."
+            }
+        };
+
+        // Initialize Deck
+        function initDeck() {
+            const dotsBox = document.getElementById('slideDotsBox');
+            dotsBox.innerHTML = '';
+            for (let i = 1; i <= totalSlides; i++) {
+                const dot = document.createElement('div');
+                dot.className = `slide-dot ${i === 1 ? 'active' : ''}`;
+                dot.onclick = () => goToSlide(i);
+                dotsBox.appendChild(dot);
+            }
+            updateSlideDisplay();
+        }
+
+        function goToSlide(index) {
+            if (index < 1 || index > totalSlides) return;
+            currentSlide = index;
+
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+
+            const targetSlide = document.querySelector(`.slide[data-slide="${index}"]`);
+            if (targetSlide) {
+                targetSlide.classList.add('active');
+            }
+
+            updateSlideDisplay();
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                goToSlide(currentSlide + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                goToSlide(currentSlide - 1);
+            }
+        }
+
+        function updateSlideDisplay() {
+            document.getElementById('currentSlideNum').textContent = currentSlide;
+            document.getElementById('totalSlideNum').textContent = totalSlides;
+            document.getElementById('slideSelect').value = currentSlide;
+
+            // Update progress bar
+            const progressPercent = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressTrack').style.width = `${progressPercent}%`;
+
+            // Update dots
+            const dots = document.querySelectorAll('.slide-dot');
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx + 1 === currentSlide);
+            });
+
+            // Update speaker note
+            document.getElementById('noteSlideNum').textContent = currentSlide;
+            document.getElementById('notesContent').textContent = speakerNotes[currentSlide] || "Không có ghi chú đặc biệt cho slide này.";
+        }
+
+        // Keyboard Shortcuts
+        window.addEventListener('keydown', (e) => {
+            // Don't capture when typing in inputs/selects
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                prevSlide();
+            } else if (e.key === 'f' || e.key === 'F') {
+                toggleFullscreen();
+            } else if (e.key === 'n' || e.key === 'N') {
+                toggleNotes();
+            } else if (e.key === 'Escape') {
+                closeDocView();
+            }
+        });
+
+        // Speaker Notes Drawer Toggle
+        function toggleNotes() {
+            document.getElementById('notesDrawer').classList.toggle('open');
+        }
+
+        // Fullscreen Toggle
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.warn(`Fullscreen error: ${err.message}`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        // Full Document View Modal
+        function openDocView() {
+            document.getElementById('docViewModal').classList.add('open');
+        }
+        function closeDocView() {
+            document.getElementById('docViewModal').classList.remove('open');
+        }
+
+        // State Machine Detail Toggle in Slide 7
+        function showStateDetail(stateKey) {
+            const data = stateDetails[stateKey];
+            if (!data) return;
+
+            document.getElementById('stateTitle').textContent = data.title;
+            document.getElementById('stateBadge').textContent = data.badge;
+            document.getElementById('stateDesc').innerHTML = data.desc;
+
+            // Update button active states
+            const btns = ['PENDING', 'ACCEPTED', 'PREPARING', 'DELIVERING', 'COMPLETED'];
+            btns.forEach((st, idx) => {
+                const btn = document.getElementById(`btnState${idx + 1}`);
+                if (btn) {
+                    btn.classList.toggle('active', st === stateKey);
+                }
+            });
+        }
+
+        // Audio Alert Simulator (Slide 5)
+        function simulateNewOrderAlert() {
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const playBeep = (freq, start, duration) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + start);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime + start);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + start + duration);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + start);
+                    osc.stop(ctx.currentTime + start + duration);
+                };
+
+                // Ringtone chord sequence
+                playBeep(587.33, 0.0, 0.15); // D5
+                playBeep(880.00, 0.18, 0.25); // A5
+                playBeep(1174.66, 0.38, 0.35); // D6
+            } catch (e) {
+                console.log("Audio not supported or blocked");
+            }
+
+            alert("🔔 [ĐƠN HÀNG MỚI #NM-883921]\nKhách: Nguyễn Văn A (0903xxx123)\n2x Cơm Tấm Sườn Bì Chả\n1x Trà Tắc Khổng Lồ\nTổng tiền: 95.000đ (Chuyển khoản VietQR)\n\nChuông máy POS đang reo... Đếm ngược: 02:59");
+        }
+
+        // Run on load
+        window.addEventListener('DOMContentLoaded', initDeck);
+    </script>
+</body>
+
+</html>
